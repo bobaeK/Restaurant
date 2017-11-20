@@ -51,9 +51,9 @@
             android:layout_marginBottom="10dp"/>
 
         <ImageView
-            android:id="@+id/img_prev"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:id="@+id/img_back"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="left|center_vertical"
             android:layout_marginLeft="5dp"/>
 
@@ -66,12 +66,12 @@
 
         <ImageView
             android:id="@+id/img_next"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
             android:layout_gravity="right|center_vertical"
             android:layout_marginRight="5dp"
             android:src="@drawable/koreanfood"
-            android:alpha="0.5"/>
+            android:alpha="0.2"/>
 
     </FrameLayout>
 
@@ -139,6 +139,11 @@
             android:background="@drawable/border_line"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"/>
+
+        <ListView
+            android:id="@+id/list_store"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
     </LinearLayout>
 

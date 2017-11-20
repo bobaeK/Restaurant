@@ -17,7 +17,7 @@ public class RestaurantItemView extends LinearLayout {
     TextView txt_phoneNumber;
     TextView txt_realReviewCnt;
     RatingBar rb_starScore;
-    ImageView img_storeSample;
+    ImageView img_storePreview;
 
     public RestaurantItemView(Context context) {
         super(context);
@@ -32,6 +32,12 @@ public class RestaurantItemView extends LinearLayout {
     private void init(Context context) {
         LayoutInflater inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.restaurant_item, this, true);
+
+        txt_storeName=(TextView)findViewById(R.id.txt_storeName);
+        txt_phoneNumber=(TextView)findViewById(R.id.txt_phoneNumber);
+        txt_realReviewCnt=(TextView)findViewById(R.id.txt_realReviewCnt);
+        rb_starScore=(RatingBar)findViewById(R.id.rb_starScore);
+        img_storePreview=(ImageView)findViewById(R.id.img_storePreview);
     }
 
     public void setStoreName(String storeName) {
@@ -43,14 +49,14 @@ public class RestaurantItemView extends LinearLayout {
     }
 
     public void setRealReviewCnt(int realReviewCnt) {
-        txt_realReviewCnt.setText("리얼후기 : "+realReviewCnt);
+        txt_realReviewCnt.setText("리얼후기 : "+realReviewCnt+" 개");
     }
 
-    public void setStarScore(int starScore) {
+    public void setStarScore(float starScore) {
         rb_starScore.setRating(starScore);
     }
 
     public void setResId(int resId) {
-       img_storeSample.setImageResource(resId);
+       img_storePreview.setImageResource(resId);
     }
 }
