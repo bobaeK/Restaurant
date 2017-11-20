@@ -1,19 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="#ffffffff">
 
     <RelativeLayout
-        android:id="@+id/mainbar"
+        android:id="@+id/layout_mainbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@color/colorPrimary">
 
         <TextView
-            android:id="@+id/tv_title"
+            android:id="@+id/txt_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="님의 맛집보장"
@@ -24,25 +26,120 @@
             android:layout_alignParentLeft="true"/>
 
         <ImageButton
-            android:id="@+id/imageButton2"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:id="@+id/bt_mypage"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:src="@drawable/mypage_icon"
             android:scaleType="fitXY"
             android:background="@color/colorPrimary"
-            android:layout_margin="5dp"
+            android:layout_margin="10dp"
             android:layout_alignParentRight="true"/>
     </RelativeLayout>
 
     <FrameLayout
+        android:id="@+id/layout_category"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
+            android:id="@+id/img_selector"
             android:layout_width="200dp"
             android:layout_height="200dp"
             android:src="@drawable/image_selector"
-            android:gravity="center"/>
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"/>
+
+        <ImageView
+            android:id="@+id/img_prev"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="left|center_vertical"
+            android:layout_marginLeft="5dp"/>
+
+        <ImageView
+            android:id="@+id/img_current"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="7dp"/>
+
+        <ImageView
+            android:id="@+id/img_next"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="right|center_vertical"
+            android:layout_marginRight="5dp"
+            android:src="@drawable/koreanfood"
+            android:alpha="0.5"/>
+
     </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txt_category"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="10dp"
+            android:text="맛집보장"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/layout_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/bt_search"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/border_ib"
+                android:scaleType="fitCenter"
+                app:srcCompat="@android:drawable/ic_search_category_default" />
+
+            <EditText
+                android:id="@+id/et_search"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/border_et"
+                android:hint="검색어"
+                android:padding="5dp"
+                android:textSize="20dp" />
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="20dp"
+            android:background="@color/colorList"
+            android:gravity="center"
+            android:padding="10dp"
+            android:text="목록"
+            android:textColor="@color/colorText"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_line"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
+    </LinearLayout>
 
 </LinearLayout>

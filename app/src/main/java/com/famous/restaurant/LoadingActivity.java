@@ -9,8 +9,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 
 public class LoadingActivity extends AppCompatActivity {
-    ImageView iv_appName;
-    ImageView iv_loadingLogo;
+    ImageView img_appName;
+    ImageView img_loadingLogo;
     Animation loadingAnim;
 
     @Override
@@ -21,8 +21,8 @@ public class LoadingActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        iv_appName=(ImageView)findViewById(R.id.iv_appName);
-        iv_loadingLogo=(ImageView)findViewById(R.id.iv_loadingLogo);
+        img_appName=(ImageView)findViewById(R.id.img_appName);
+        img_loadingLogo=(ImageView)findViewById(R.id.img_loadingLogo);
 
         loadingAnim= AnimationUtils.loadAnimation(this, R.anim.loading);
         loadingAnim.setAnimationListener(new Animation.AnimationListener() {
@@ -39,8 +39,8 @@ public class LoadingActivity extends AppCompatActivity {
             public void onAnimationRepeat(Animation animation) {}
         });
 
-        iv_loadingLogo.startAnimation(loadingAnim);
-        iv_appName.startAnimation(loadingAnim);
+        img_loadingLogo.startAnimation(loadingAnim);
+        img_appName.startAnimation(loadingAnim);
 
     }
 }

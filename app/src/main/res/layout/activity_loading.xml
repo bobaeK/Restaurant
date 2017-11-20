@@ -6,13 +6,13 @@
     android:background="#ffffffff">
 
     <ImageView
-        android:id="@+id/iv_loadingLogo"
+        android:id="@+id/img_loadingLogo"
         android:src="@drawable/loading_logo"
         android:layout_width="200dp"
         android:layout_height="100dp" />
 
     <ImageView
-        android:id="@+id/iv_appName"
+        android:id="@+id/img_appName"
         android:src="@drawable/app_name"
         android:layout_width="200dp"
         android:layout_height="100dp" />
