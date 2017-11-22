@@ -5,7 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#ffffffff">
+    android:background="#ffffffff"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <RelativeLayout
         android:id="@+id/layout_mainbar"
@@ -113,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/border_et"
-                android:hint="검색어"
+                android:hint="검색"
                 android:padding="5dp"
                 android:textSize="20dp" />
 
@@ -130,7 +132,7 @@
             android:padding="10dp"
             android:text="목록"
             android:textColor="@color/colorText"
-            android:textSize="20dp"
+            android:textSize="16dp"
             android:textStyle="bold" />
 
         <TextView
@@ -143,7 +145,8 @@
         <ListView
             android:id="@+id/list_store"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"/>
 
     </LinearLayout>
 
