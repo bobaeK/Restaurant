@@ -13,11 +13,11 @@ import android.widget.TextView;
  */
 
 public class RestaurantItemView extends LinearLayout {
-    TextView txt_storeName;
-    TextView txt_phoneNumber;
-    TextView txt_realReviewCnt;
+    TextView tv_storeName;
+    TextView tv_phoneNumber;
+    TextView tv_realReviewCnt;
     RatingBar rb_starScore;
-    ImageView img_storePreview;
+    ImageView iv_storePreview;
 
     public RestaurantItemView(Context context) {
         super(context);
@@ -33,23 +33,23 @@ public class RestaurantItemView extends LinearLayout {
         LayoutInflater inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.restaurant_item, this, true);
 
-        txt_storeName=(TextView)findViewById(R.id.txt_storeName);
-        txt_phoneNumber=(TextView)findViewById(R.id.txt_phoneNumber);
-        txt_realReviewCnt=(TextView)findViewById(R.id.txt_realReviewCnt);
+        tv_storeName=(TextView)findViewById(R.id.tv_storeName);
+        tv_phoneNumber=(TextView)findViewById(R.id.tv_phoneNumber);
+        tv_realReviewCnt=(TextView)findViewById(R.id.tv_realReviewCnt);
         rb_starScore=(RatingBar)findViewById(R.id.rb_starScore);
-        img_storePreview=(ImageView)findViewById(R.id.img_storePreview);
+        iv_storePreview=(ImageView)findViewById(R.id.iv_storePreview);
     }
 
     public void setStoreName(String storeName) {
-        txt_storeName.setText(storeName);
+        tv_storeName.setText(storeName);
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        txt_phoneNumber.setText("연락처 : "+phoneNumber);
+        tv_phoneNumber.setText("연락처 : "+phoneNumber);
     }
 
     public void setRealReviewCnt(int realReviewCnt) {
-        txt_realReviewCnt.setText("리얼후기 : "+realReviewCnt+" 개");
+        tv_realReviewCnt.setText("리얼후기 : "+realReviewCnt+" 개");
     }
 
     public void setStarScore(float starScore) {
@@ -57,6 +57,6 @@ public class RestaurantItemView extends LinearLayout {
     }
 
     public void setResId(int resId) {
-       img_storePreview.setImageResource(resId);
+       iv_storePreview.setImageResource(resId);
     }
 }

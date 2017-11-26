@@ -21,8 +21,8 @@ public class LoadingActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        img_appName=(ImageView)findViewById(R.id.img_appName);
-        img_loadingLogo=(ImageView)findViewById(R.id.img_loadingLogo);
+        img_appName=(ImageView)findViewById(R.id.iv_appName);
+        img_loadingLogo=(ImageView)findViewById(R.id.iv_loadingLogo);
 
         loadingAnim= AnimationUtils.loadAnimation(this, R.anim.loading);
         loadingAnim.setAnimationListener(new Animation.AnimationListener() {
