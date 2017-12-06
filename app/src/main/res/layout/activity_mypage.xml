@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#ffffffff"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <LinearLayout
+        android:id="@+id/rl_mainbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimary">
+
+        <ImageButton
+            android:id="@+id/ib_back"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:src="@drawable/ic_back_24dp"
+            android:scaleType="fitXY"
+            android:background="@color/colorPrimary"
+            android:layout_margin="10dp"
+            android:layout_alignParentRight="true"/>
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="마이페이지지"
+           android:textColor="@color/colorText"
+            android:textSize="16dp"
+            android:textStyle="bold"
+            android:layout_marginTop="15dp"
+            android:layout_marginBottom="15dp"
+            android:layout_alignParentLeft="true"/>
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/sv_mypage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+    <TableLayout
+        android:id="@+id/tl_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp">
+
+        <TableRow
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="사용자 이름"
+                android:textcolor="@color/colorHint"
+                android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/tv_userName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="배형진"
+                android:layout_weight="2"/>
+        </TableRow>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_line"/>
+        <TableRow
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="아이디"
+                android:textcolor="@color/colorHint"
+                android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/tv_userID"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="dkwk1254"
+                android:layout_weight="2"/>
+        </TableRow>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_line"/>
+        <TableRow
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="이메일"
+                android:textcolor="@color/colorHint"
+                android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/tv_userEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="dkwk1254@naver.com"
+                android:layout_weight="2"/>
+        </TableRow>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_line"/>
+        <TableRow
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="전화번호"
+                android:textcolor="@color/colorHint"
+                android:layout_weight="1"/>
+            <TextView
+                android:id="@+id/tv_userPhone"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="01028893204"
+                android:layout_weight="2"/>
+        </TableRow>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_line"/>
+        <TableRow
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="현재 비밀번호"
+                android:textcolor="@color/colorHint"/>
+            <EditText
+                android:id="@+id/et_curPassword"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/border_et"
+                android:layout_marginLeft="25dp"/>
+        </TableRow>
+    </TableLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="정보 수정"
+            android:background="@color/colorList"
+            android:textColor="@color/colorText"
+            android:padding="10dp"
+            android:layout_marginBottom="10dp"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_line" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="내가 작성한 후기"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_line" />
+
+        <ListView
+            android:id="@+id/lv_reviewList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_line" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="내가 인증한 음식점"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/border_line" />
+
+        <ListView
+            android:id="@+id/lv_certifiedList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
