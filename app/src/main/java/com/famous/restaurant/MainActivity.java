@@ -1,5 +1,6 @@
 package com.famous.restaurant;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -11,8 +12,10 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -31,6 +34,25 @@ public class MainActivity extends AppCompatActivity {
 
         final RestaurantAdapter adapter=new RestaurantAdapter();
         final FrameLayout layout_category=(FrameLayout)findViewById(R.id.fl_category);
+        final ImageButton ib_myPage=(ImageButton)findViewById(R.id.ib_myPage);
+
+        ib_myPage.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent ev) {
+                switch(ev.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        ib_myPage.setAlpha((float)0.1);
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        ib_myPage.setAlpha((float)1.0);
+                        Intent intent=new Intent(getApplicationContext(), MyPageActivity.class);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                        break;
+                }
+                return true;
+            }
+        }) ;
 
         layout_category.setOnTouchListener(new View.OnTouchListener() {
             Animation categoryLeftAnim;
@@ -132,9 +154,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        ListView list_store=(ListView)findViewById(R.id.lv_store);
+        final ListView list_store=(ListView)findViewById(R.id.lv_store);
+        final ScrollView sv_main=(ScrollView)findViewById(R.id.sv_main);
 
         adapter.addItem(new RestaurantItem("샤론스톤", "010-0000-0000", 1, (float)3.5, R.drawable.charlostone));
+        adapter.addItem(new RestaurantItem("샤론스톤", "010-0000-0000", 1, (float)3.5, R.drawable.charlostone));
+        adapter.addItem(new RestaurantItem("샤론스톤", "010-0000-0000", 1, (float)3.5, R.drawable.charlostone));
+        adapter.addItem(new RestaurantItem("샤론스톤", "010-0000-0000", 1, (float)3.5, R.drawable.charlostone));
+        adapter.addItem(new RestaurantItem("샤론스톤", "010-0000-0000", 1, (float)3.5, R.drawable.charlostone));
+
         list_store.setAdapter(adapter);
 
         list_store.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -142,6 +170,14 @@ public class MainActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 RestaurantItem item=(RestaurantItem)adapter.getItem(position);
                 Toast.makeText(getApplicationContext(), "선택 : "+item.getStoreName(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        list_store.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                sv_main.requestDisallowInterceptTouchEvent(true);
+                return false;
             }
         });
     }
