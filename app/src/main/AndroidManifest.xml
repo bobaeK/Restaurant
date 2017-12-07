@@ -28,7 +28,7 @@
         <activity
             android:name=".RegisterActivity"
             android:theme="@style/Theme.AppCompat.Dialog" />
-        <activity android:name=".TotalReview"></activity>
+        <activity android:name=".MypageActivity"></activity>
     </application>
 
 </manifest>
