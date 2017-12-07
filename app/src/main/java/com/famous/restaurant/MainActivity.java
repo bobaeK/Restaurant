@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
                         break;
                     case MotionEvent.ACTION_UP:
                         ib_myPage.setAlpha((float)1.0);
-                        Intent intent=new Intent(getApplicationContext(), MyPageActivity.class);
+                        Intent intent=new Intent(getApplicationContext(), MypageActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP|Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(intent);
                         break;
