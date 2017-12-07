@@ -59,7 +59,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="사용자 이름"
-                android:textcolor="@color/colorHint"
+                android:textColor="@color/colorHint"
                 android:layout_weight="1"/>
             <TextView
                 android:id="@+id/tv_userName"
@@ -79,7 +79,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="아이디"
-                android:textcolor="@color/colorHint"
+                android:textColor="@color/colorHint"
                 android:layout_weight="1"/>
             <TextView
                 android:id="@+id/tv_userID"
@@ -99,7 +99,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="이메일"
-                android:textcolor="@color/colorHint"
+                android:textColor="@color/colorHint"
                 android:layout_weight="1"/>
             <TextView
                 android:id="@+id/tv_userEmail"
@@ -119,7 +119,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="전화번호"
-                android:textcolor="@color/colorHint"
+                android:textColor="@color/colorHint"
                 android:layout_weight="1"/>
             <TextView
                 android:id="@+id/tv_userPhone"
@@ -139,7 +139,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="현재 비밀번호"
-                android:textcolor="@color/colorHint"/>
+                android:textColor="@color/colorHint"/>
             <EditText
                 android:id="@+id/et_curPassword"
                 android:layout_width="150dp"
