@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
         final RestaurantAdapter adapter=new RestaurantAdapter();
         final FrameLayout layout_category=(FrameLayout)findViewById(R.id.fl_category);
         final ImageButton ib_myPage=(ImageButton)findViewById(R.id.ib_myPage);
+        final ListView list_store=(ListView)findViewById(R.id.lv_store);
+        final ScrollView sv_main=(ScrollView)findViewById(R.id.sv_main);
 
         ib_myPage.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
             public boolean onTouch(View v, MotionEvent ev){
                 switch(ev.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+                        sv_main.requestDisallowInterceptTouchEvent(true);
                         initX=ev.getX();
                         break;
                     case MotionEvent.ACTION_UP:
@@ -153,9 +156,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        final ListView list_store=(ListView)findViewById(R.id.lv_store);
-        final ScrollView sv_main=(ScrollView)findViewById(R.id.sv_main);
 
         adapter.addItem(new RestaurantItem("샤론스톤", "010-0000-0000", 1, (float)3.5, R.drawable.charlostone));
         adapter.addItem(new RestaurantItem("샤론스톤", "010-0000-0000", 1, (float)3.5, R.drawable.charlostone));
