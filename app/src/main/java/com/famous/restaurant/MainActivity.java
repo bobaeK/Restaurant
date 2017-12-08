@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         final Handler handler= new Handler();
 
         final RestaurantAdapter adapter=new RestaurantAdapter();
-        final FrameLayout layout_category=(FrameLayout)findViewById(R.id.fl_category);
+        final FrameLayout fl_category=(FrameLayout)findViewById(R.id.fl_category);
         final ImageButton ib_myPage=(ImageButton)findViewById(R.id.ib_myPage);
         final ListView list_store=(ListView)findViewById(R.id.lv_store);
         final ScrollView sv_main=(ScrollView)findViewById(R.id.sv_main);
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }) ;
 
-        layout_category.setOnTouchListener(new View.OnTouchListener() {
+        fl_category.setOnTouchListener(new View.OnTouchListener() {
             Animation categoryLeftAnim;
             Animation categoryCenterAnim;
             Animation categoryRightAnim;
