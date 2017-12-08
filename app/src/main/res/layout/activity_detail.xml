@@ -36,11 +36,17 @@
         </LinearLayout>
     </android.support.v7.widget.Toolbar>
     <!--음식점 상세정보 스크롤-->
-    <ListView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:id="@+id/listView"/>
+        android:orientation="vertical">
+        <!--상세정보 include-->
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/include_detail"/>
+    </ScrollView>
 
     <!--하단 버튼-->
     <TableLayout
@@ -62,5 +68,4 @@
                 android:id="@+id/register_btn"/>
         </TableRow>
     </TableLayout>
-
 </LinearLayout>
