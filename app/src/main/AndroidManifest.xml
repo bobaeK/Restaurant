@@ -28,7 +28,14 @@
         <activity android:name=".LoginActivity" />
         <activity
             android:name=".RegisterActivity"
-            android:theme="@style/Theme.AppCompat.Dialog" />
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
+        <activity
+            android:name=".FindIDActivity"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
+        <activity
+            android:name=".FindPwdActivity"
+            android:theme="@style/Theme.AppCompat.Light.Dialog" />
+        <activity android:name=".ChangePwdActivity"></activity>
     </application>
 
 </manifest>
