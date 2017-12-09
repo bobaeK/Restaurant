@@ -12,23 +12,20 @@
         android:text="기본음식점"
         android:textStyle="bold"
         android:textSize="25dp"
-        android:gravity="center"
-        />
+        android:gravity="center" />
     <!--지도-->
     <FrameLayout
         android:id="@+id/map_fragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-
     </FrameLayout>
     <!--음식점 정보-->
     <GridLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="2"
-        android:layout_marginTop="5dp"
-        >
-
+        android:layout_marginTop="5dp">
+        <!--전화번호-->
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -43,7 +40,8 @@
             android:textStyle="bold"
             android:layout_gravity="fill_vertical"
             android:gravity="center"
-            />
+            android:onClick="onPhoneCallClicked"/>
+        <!--주소-->
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -58,7 +56,7 @@
             android:textStyle="bold"
             android:layout_gravity="fill_vertical"
             android:gravity="center"/>
-
+        <!--영업시간-->
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -73,6 +71,7 @@
             android:textStyle="bold"
             android:layout_gravity="fill_vertical"
             android:gravity="center"/>
+        <!--메뉴-->
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -87,12 +86,12 @@
             android:textStyle="bold"
             android:layout_gravity="fill_vertical"
             android:gravity="center"/>
+        <!--음식점 사진-->
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_collections_24dp"
             android:padding="10dp"/>
-
         <TextView
             android:id="@+id/picture_text"
             android:layout_width="wrap_content"
@@ -123,7 +122,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="후기" />
-
+            <!--전체후기 페이지 이동-->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

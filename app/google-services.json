@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "11795707286",
-    "firebase_url": "https://restaurant-bbdc1.firebaseio.com",
-    "project_id": "restaurant-bbdc1",
-    "storage_bucket": "restaurant-bbdc1.appspot.com"
+    "project_number": "1012313343108",
+    "firebase_url": "https://restaurant-39190.firebaseio.com",
+    "project_id": "restaurant-39190",
+    "storage_bucket": "restaurant-39190.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:11795707286:android:50ab52d082ef476d",
+        "mobilesdk_app_id": "1:1012313343108:android:50ab52d082ef476d",
         "android_client_info": {
           "package_name": "com.famous.restaurant"
         }
       },
       "oauth_client": [
         {
-          "client_id": "11795707286-smc5hps8rgsij5258onmnhtd7a9hkkr6.apps.googleusercontent.com",
+          "client_id": "1012313343108-qvjfggai85ot46e1g8qjcuftmpig6cjg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.famous.restaurant",
@@ -23,13 +23,21 @@
           }
         },
         {
-          "client_id": "11795707286-3k1ukrq2dvhrbs8u7n7okg0faf0fmo3c.apps.googleusercontent.com",
+          "client_id": "1012313343108-6s06vpre9jvodmk74bu07rnqp42a7krs.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.famous.restaurant",
+            "certificate_hash": "c2fb9340f36d31e4e723560b5d3921b059baa33b"
+          }
+        },
+        {
+          "client_id": "1012313343108-f865s7vo5o0aacqr215m0s7c7cprughk.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyB4v9F-HUfftYYPeFowR2Nsly5e8qS6Kto"
+          "current_key": "AIzaSyB2Nk9wwkO07YhWu-t23a7MMaLd8csgCoo"
         }
       ],
       "services": {
@@ -40,7 +48,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "11795707286-3k1ukrq2dvhrbs8u7n7okg0faf0fmo3c.apps.googleusercontent.com",
+              "client_id": "1012313343108-f865s7vo5o0aacqr215m0s7c7cprughk.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
