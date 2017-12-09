@@ -3,7 +3,7 @@ package com.famous.restaurant;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class TotalReview extends AppCompatActivity {
+public class TotalReviewActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
