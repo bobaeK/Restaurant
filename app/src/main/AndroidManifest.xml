@@ -28,11 +28,12 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyCsfo3JXWdBkWDkMh64mjPZpJWkPYLPyBU" />
 
-        <activity android:name=".LoadingActivity" />
+        <!-- 형진 activity -->
         <activity android:name=".MainActivity" />
+        <activity android:name=".DetailActivity" />
         <activity android:name=".MypageActivity"/>
         <!-- 보배 activity-->
-        <activity android:name=".DetailActivity">
+        <activity android:name=".LoadingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

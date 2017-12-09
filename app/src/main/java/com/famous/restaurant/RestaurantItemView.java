@@ -8,6 +8,8 @@ import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 /**
  * Created by Jin on 2017-11-20.
  */
@@ -56,7 +58,7 @@ public class RestaurantItemView extends LinearLayout {
         rb_starScore.setRating(starScore);
     }
 
-    public void setResId(int resId) {
-       iv_storePreview.setImageResource(resId);
+    public void setImageURL(Context context, String imageURL) {
+        Glide.with(context).load(imageURL).into(iv_storePreview);
     }
 }

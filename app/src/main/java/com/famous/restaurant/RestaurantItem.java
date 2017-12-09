@@ -9,14 +9,14 @@ public class RestaurantItem {
     private String phoneNumber;
     private int realReviewCnt;
     private float starScore;
-    private int resId;
+    private String imageURL;
 
-    public RestaurantItem(String storeName, String phoneNumber, int realReviewCnt, float starScore, int resId) {
+    public RestaurantItem(String storeName, String phoneNumber, int realReviewCnt, float starScore, String imageURL) {
         this.storeName = storeName;
         this.phoneNumber = phoneNumber;
         this.realReviewCnt = realReviewCnt;
         this.starScore = starScore;
-        this.resId = resId;
+        this.imageURL = imageURL;
     }
 
     public String getStoreName() {
@@ -51,11 +51,11 @@ public class RestaurantItem {
         this.starScore = starScore;
     }
 
-    public int getResId() {
-        return resId;
+    public String getImageURL() {
+        return imageURL;
     }
 
-    public void setResId(int resId) {
-        this.resId = resId;
+    public void setImageURL(int resId) {
+        this.imageURL = imageURL;
     }
 }
