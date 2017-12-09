@@ -18,17 +18,48 @@ import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity {
 
     Integer[] foodImageIds={ 0, R.drawable.category0, R.drawable.category1, R.drawable.category2,
             R.drawable.category3, R.drawable.category4, R.drawable.category5 ,0};
 
+    DatabaseReference mDatabase;
+
+    List<RestaurantVO> restaurantList=new ArrayList<>();
+    List<RestaurantItem> itemList=new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mDatabase = FirebaseDatabase.getInstance().getReference("restaurants");
+
+        mDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    RestaurantVO restaurantInfo = postSnapshot.getValue(RestaurantVO.class);
+                    restaurantList.add(restaurantInfo);
+                }
+            }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            }
+        );
 
         final Handler handler= new Handler();
 
@@ -157,12 +188,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        adapter.addItem(new RestaurantItem("샤론스톤", "010-0000-0000", 1, (float)3.5, R.drawable.charlostone));
-        adapter.addItem(new RestaurantItem("샤론스톤", "010-0000-0000", 1, (float)3.5, R.drawable.charlostone));
-        adapter.addItem(new RestaurantItem("샤론스톤", "010-0000-0000", 1, (float)3.5, R.drawable.charlostone));
-        adapter.addItem(new RestaurantItem("샤론스톤", "010-0000-0000", 1, (float)3.5, R.drawable.charlostone));
-        adapter.addItem(new RestaurantItem("샤론스톤", "010-0000-0000", 1, (float)3.5, R.drawable.charlostone));
-
+        setItemList();
+        for(RestaurantItem rItem : itemList) {
+            adapter.addItem(rItem);
+        }
         list_store.setAdapter(adapter);
 
         list_store.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -212,11 +241,30 @@ public class MainActivity extends AppCompatActivity {
             view.setPhoneNumber(item.getPhoneNumber());
             view.setRealReviewCnt(item.getRealReviewCnt());
             view.setStarScore(item.getStarScore());
-            view.setResId(item.getResId());
+            view.setImageURL(getApplicationContext(), item.getImageURL());
 
             return view;
         }
 
         void addItem(RestaurantItem item) { items.add(item); }
+    }
+
+
+   /* RestaurantItem("샤론스톤", "010-0000-0000", 1, (float)3.5, R.drawable.charlostone) */
+    private void setItemList() {
+        String sName;
+        String pNumber;
+        int rCnt=0;
+        float sScore=0;
+        String prevURL;
+
+        for(RestaurantVO rVO : restaurantList) {
+            sName=rVO.getName();
+            pNumber=rVO.getPhone();
+            StringTokenizer setImgURL=new StringTokenizer(rVO.getImageURL(), "$");
+            prevURL=setImgURL.nextToken();
+
+            itemList.add(new RestaurantItem(sName, pNumber, rCnt, sScore, prevURL));
+        }
     }
 }
