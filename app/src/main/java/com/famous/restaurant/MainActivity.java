@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,18 +49,25 @@ public class MainActivity extends AppCompatActivity {
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    RestaurantVO restaurantInfo = postSnapshot.getValue(RestaurantVO.class);
-                    restaurantList.add(restaurantInfo);
-                }
-            }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+                    RestaurantVO restaurant = postSnapshot.getValue(RestaurantVO.class);
+                    Log.d("name", restaurant.getName());
+                    Log.d("address", restaurant.getAddress());
+                    Log.d("businessHours", restaurant.getBusinessHours());
+                    Log.d("category", restaurant.getCategory());
+                    Log.d("imageURL", restaurant.getImageURL());
+                    Log.d("getPhone", restaurant.getPhone());
+                    Log.d("menuList", restaurant.getMenuList());
+                    Log.d("latitude", ""+restaurant.getLatitude());
+                    Log.d("longitude", ""+restaurant.getLongitude());
 
+                    restaurantList.add(restaurant);
                 }
             }
-        );
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {}
+        });
 
         final Handler handler= new Handler();
 
@@ -250,7 +258,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-   /* RestaurantItem("샤론스톤", "010-0000-0000", 1, (float)3.5, R.drawable.charlostone) */
     private void setItemList() {
         String sName;
         String pNumber;
@@ -266,5 +273,6 @@ public class MainActivity extends AppCompatActivity {
 
             itemList.add(new RestaurantItem(sName, pNumber, rCnt, sScore, prevURL));
         }
+
     }
 }
