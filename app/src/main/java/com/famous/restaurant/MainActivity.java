@@ -17,6 +17,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
@@ -31,8 +32,8 @@ import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity {
 
-    Integer[] foodImageIds={ 0, R.drawable.category0, R.drawable.category1, R.drawable.category2,
-            R.drawable.category3, R.drawable.category4, R.drawable.category5 ,0};
+    Integer[] foodImageIds={ 0, R.drawable.category, R.drawable.category0, R.drawable.category1, R.drawable.category2,
+            R.drawable.category3, R.drawable.category4, R.drawable.category5 , R.drawable.category, 0};
 
     DatabaseReference mDatabase;
     ProgressDialog progressDialog;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     RestaurantAdapter adapter=new RestaurantAdapter();
     ListView list_store;
-
+    TextView tv_category;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
         final ImageButton ib_myPage=(ImageButton)findViewById(R.id.ib_myPage);
         final ScrollView sv_main=(ScrollView)findViewById(R.id.sv_main);
         list_store=(ListView)findViewById(R.id.lv_store);
+        tv_category=(TextView)findViewById(R.id.tv_category);
 
         mDatabase = FirebaseDatabase.getInstance().getReference("restaurants");
         progressDialog = new ProgressDialog(MainActivity.this);
@@ -67,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     RestaurantVO restaurant = postSnapshot.getValue(RestaurantVO.class);
                     restaurantList.add(restaurant);
+                    filteredList.add(restaurant);
                 }
-                filteredList=restaurantList;
                 setItemList();
                 for(RestaurantItem rItem : itemList) {
                     adapter.addItem(rItem);
@@ -111,10 +113,10 @@ public class MainActivity extends AppCompatActivity {
             ImageView iv_next=(ImageView)findViewById(R.id.iv_next);
 
             float initX;
-            int imageIdx=0;
-            int backImageId=0;
-            int currentImageId=0;
-            int nextImageId=foodImageIds[0];
+            int imageIdx=1;
+            int backImageId=foodImageIds[0];
+            int currentImageId=foodImageIds[1];
+            int nextImageId=foodImageIds[2];
 
             @Override
             public boolean onTouch(View v, MotionEvent ev){
@@ -138,7 +140,7 @@ public class MainActivity extends AppCompatActivity {
                             iv_next.startAnimation(categoryRightAnim);
 
                             imageIdx++;
-                            if(imageIdx>6)
+                            if(imageIdx>8)
                                 imageIdx--;
 
                             handler.postDelayed(new Runnable() {
@@ -149,12 +151,12 @@ public class MainActivity extends AppCompatActivity {
                                     nextImageId=foodImageIds[imageIdx+1];
 
                                     iv_back.setImageResource(backImageId);
-                                    iv_current.setImageResource(currentImageId);
-                                    iv_next.setImageResource(nextImageId);
-
                                     iv_back.invalidate();
+                                    iv_current.setImageResource(currentImageId);
                                     iv_current.invalidate();
+                                    iv_next.setImageResource(nextImageId);
                                     iv_next.invalidate();
+
                                     checkCurrentImageId(currentImageId);
                                 }
                             }, 299);
@@ -185,12 +187,12 @@ public class MainActivity extends AppCompatActivity {
                                     backImageId=foodImageIds[imageIdx-1];
 
                                     iv_back.setImageResource(backImageId);
-                                    iv_current.setImageResource(currentImageId);
-                                    iv_next.setImageResource(nextImageId);
-
                                     iv_back.invalidate();
+                                    iv_current.setImageResource(currentImageId);
                                     iv_current.invalidate();
+                                    iv_next.setImageResource(nextImageId);
                                     iv_next.invalidate();
+
                                     checkCurrentImageId(currentImageId);
                                 }
                             }, 299);
@@ -286,8 +288,12 @@ public class MainActivity extends AppCompatActivity {
         itemList.clear();
 
         for(int i=0; i<restaurantList.size(); i++) {
-            if (restaurantList.get(i).getCategory().equals(category))
+            if(category.equals("total")) {
                 filteredList.add(restaurantList.get(i));
+            }
+            else if (restaurantList.get(i).getCategory().equals(category)) {
+                filteredList.add(restaurantList.get(i));
+            }
         }
 
         setItemList();
@@ -300,29 +306,33 @@ public class MainActivity extends AppCompatActivity {
 
     public void checkCurrentImageId(int currentImageId) {
         switch(currentImageId) {
+            case R.drawable.category:
+                filterList("total");
+                tv_category.setText("맛집보장");
+                break;
             case R.drawable.category0:
                 filterList("korea");
-                Toast.makeText(getApplicationContext(), "한식", Toast.LENGTH_SHORT).show();
+                tv_category.setText("한식");
                 break;
             case R.drawable.category1:
                 filterList("japan");
-                Toast.makeText(getApplicationContext(), "일식", Toast.LENGTH_SHORT).show();
+                tv_category.setText("일식");
                 break;
             case R.drawable.category2:
                 filterList("china");
-                Toast.makeText(getApplicationContext(), "중식", Toast.LENGTH_SHORT).show();
+                tv_category.setText("중식");
                 break;
             case R.drawable.category3:
                 filterList("western");
-                Toast.makeText(getApplicationContext(), "양식", Toast.LENGTH_SHORT).show();
+                tv_category.setText("양식");
                 break;
             case R.drawable.category4:
                 filterList("chicken");
-                Toast.makeText(getApplicationContext(), "치킨", Toast.LENGTH_SHORT).show();
+                tv_category.setText("치킨");
                 break;
             case R.drawable.category5:
                 filterList("school");
-                Toast.makeText(getApplicationContext(), "분식", Toast.LENGTH_SHORT).show();
+                tv_category.setText("분식");
                 break;
         }
     }

@@ -76,7 +76,8 @@
                     android:layout_width="140dp"
                     android:layout_height="140dp"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="7dp" />
+                    android:layout_marginBottom="7dp"
+                    android:src="@drawable/category"/>
 
                 <ImageView
                     android:id="@+id/iv_next"
