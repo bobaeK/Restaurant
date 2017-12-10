@@ -9,6 +9,7 @@
         android:layout_width="120dp"
         android:layout_height="120dp" 
         android:src="@drawable/charlostone"
+        android:scaleType="fitXY"
         android:layout_margin="5dp"/>
 
     <LinearLayout

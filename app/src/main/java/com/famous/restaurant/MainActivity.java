@@ -1,10 +1,10 @@
 package com.famous.restaurant;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,47 +35,53 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.category3, R.drawable.category4, R.drawable.category5 ,0};
 
     DatabaseReference mDatabase;
+    ProgressDialog progressDialog;
 
     List<RestaurantVO> restaurantList=new ArrayList<>();
+    List<RestaurantVO> filteredList=new ArrayList<>();
     List<RestaurantItem> itemList=new ArrayList<>();
+
+    RestaurantAdapter adapter=new RestaurantAdapter();
+    ListView list_store;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final Handler handler= new Handler();
+        final FrameLayout fl_category=(FrameLayout)findViewById(R.id.fl_category);
+        final ImageButton ib_myPage=(ImageButton)findViewById(R.id.ib_myPage);
+        final ScrollView sv_main=(ScrollView)findViewById(R.id.sv_main);
+        list_store=(ListView)findViewById(R.id.lv_store);
+
         mDatabase = FirebaseDatabase.getInstance().getReference("restaurants");
+        progressDialog = new ProgressDialog(MainActivity.this);
+        progressDialog.setMessage("데이터 불러오는 중...");
+        progressDialog.show();
 
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     RestaurantVO restaurant = postSnapshot.getValue(RestaurantVO.class);
-                    Log.d("name", restaurant.getName());
-                    Log.d("address", restaurant.getAddress());
-                    Log.d("businessHours", restaurant.getBusinessHours());
-                    Log.d("category", restaurant.getCategory());
-                    Log.d("imageURL", restaurant.getImageURL());
-                    Log.d("getPhone", restaurant.getPhone());
-                    Log.d("menuList", restaurant.getMenuList());
-                    Log.d("latitude", ""+restaurant.getLatitude());
-                    Log.d("longitude", ""+restaurant.getLongitude());
-
                     restaurantList.add(restaurant);
                 }
+                filteredList=restaurantList;
+                setItemList();
+                for(RestaurantItem rItem : itemList) {
+                    adapter.addItem(rItem);
+                }
+                list_store.setAdapter(adapter);
+                progressDialog.dismiss();
             }
 
             @Override
-            public void onCancelled(DatabaseError databaseError) {}
+            public void onCancelled(DatabaseError databaseError) {
+                progressDialog.dismiss();
+            }
         });
-
-        final Handler handler= new Handler();
-
-        final RestaurantAdapter adapter=new RestaurantAdapter();
-        final FrameLayout fl_category=(FrameLayout)findViewById(R.id.fl_category);
-        final ImageButton ib_myPage=(ImageButton)findViewById(R.id.ib_myPage);
-        final ListView list_store=(ListView)findViewById(R.id.lv_store);
-        final ScrollView sv_main=(ScrollView)findViewById(R.id.sv_main);
 
         ib_myPage.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -149,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
                                     iv_back.invalidate();
                                     iv_current.invalidate();
                                     iv_next.invalidate();
+                                    checkCurrentImageId(currentImageId);
                                 }
                             }, 299);
 
@@ -184,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
                                     iv_back.invalidate();
                                     iv_current.invalidate();
                                     iv_next.invalidate();
+                                    checkCurrentImageId(currentImageId);
                                 }
                             }, 299);
 
@@ -195,12 +203,6 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-        setItemList();
-        for(RestaurantItem rItem : itemList) {
-            adapter.addItem(rItem);
-        }
-        list_store.setAdapter(adapter);
 
         list_store.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -255,6 +257,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         void addItem(RestaurantItem item) { items.add(item); }
+
+        void clearItem() { items.clear(); }
     }
 
 
@@ -265,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
         float sScore=0;
         String prevURL;
 
-        for(RestaurantVO rVO : restaurantList) {
+        for(RestaurantVO rVO : filteredList) {
             sName=rVO.getName();
             pNumber=rVO.getPhone();
             StringTokenizer setImgURL=new StringTokenizer(rVO.getImageURL(), "$");
@@ -274,5 +278,52 @@ public class MainActivity extends AppCompatActivity {
             itemList.add(new RestaurantItem(sName, pNumber, rCnt, sScore, prevURL));
         }
 
+    }
+
+    private void filterList(String category) {
+        filteredList.clear();
+        adapter.clearItem();
+        itemList.clear();
+
+        for(int i=0; i<restaurantList.size(); i++) {
+            if (restaurantList.get(i).getCategory().equals(category))
+                filteredList.add(restaurantList.get(i));
+        }
+
+        setItemList();
+        for(RestaurantItem rItem : itemList) {
+            adapter.addItem(rItem);
+        }
+        adapter.notifyDataSetChanged();
+        list_store.setAdapter(adapter);
+    }
+
+    public void checkCurrentImageId(int currentImageId) {
+        switch(currentImageId) {
+            case R.drawable.category0:
+                filterList("korea");
+                Toast.makeText(getApplicationContext(), "한식", Toast.LENGTH_SHORT).show();
+                break;
+            case R.drawable.category1:
+                filterList("japan");
+                Toast.makeText(getApplicationContext(), "일식", Toast.LENGTH_SHORT).show();
+                break;
+            case R.drawable.category2:
+                filterList("china");
+                Toast.makeText(getApplicationContext(), "중식", Toast.LENGTH_SHORT).show();
+                break;
+            case R.drawable.category3:
+                filterList("western");
+                Toast.makeText(getApplicationContext(), "양식", Toast.LENGTH_SHORT).show();
+                break;
+            case R.drawable.category4:
+                filterList("chicken");
+                Toast.makeText(getApplicationContext(), "치킨", Toast.LENGTH_SHORT).show();
+                break;
+            case R.drawable.category5:
+                filterList("school");
+                Toast.makeText(getApplicationContext(), "분식", Toast.LENGTH_SHORT).show();
+                break;
+        }
     }
 }
