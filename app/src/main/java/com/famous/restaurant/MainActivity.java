@@ -1,17 +1,21 @@
 package com.famous.restaurant;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -40,11 +44,13 @@ public class MainActivity extends AppCompatActivity {
 
     List<RestaurantVO> restaurantList=new ArrayList<>();
     List<RestaurantVO> filteredList=new ArrayList<>();
+    List<RestaurantVO> searchList=new ArrayList<>();
     List<RestaurantItem> itemList=new ArrayList<>();
 
     RestaurantAdapter adapter=new RestaurantAdapter();
     ListView list_store;
     TextView tv_category;
+    EditText et_search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +58,14 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         final Handler handler= new Handler();
+        final InputMethodManager imm=(InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         final FrameLayout fl_category=(FrameLayout)findViewById(R.id.fl_category);
         final ImageButton ib_myPage=(ImageButton)findViewById(R.id.ib_myPage);
         final ScrollView sv_main=(ScrollView)findViewById(R.id.sv_main);
+        final ImageButton ib_search=(ImageButton)findViewById(R.id.ib_search);
         list_store=(ListView)findViewById(R.id.lv_store);
         tv_category=(TextView)findViewById(R.id.tv_category);
+        et_search=(EditText)findViewById(R.id.et_search);
 
         mDatabase = FirebaseDatabase.getInstance().getReference("restaurants");
         progressDialog = new ProgressDialog(MainActivity.this);
@@ -71,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                     restaurantList.add(restaurant);
                     filteredList.add(restaurant);
                 }
-                setItemList();
+                setItemList(filteredList);
                 for(RestaurantItem rItem : itemList) {
                     adapter.addItem(rItem);
                 }
@@ -83,6 +92,47 @@ public class MainActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) {
                 progressDialog.dismiss();
             }
+        });
+
+        et_search.setOnKeyListener(new View.OnKeyListener() {
+           @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+               if(keyCode==event.KEYCODE_ENTER)
+                   return true;
+               return false;
+           }
+        });
+
+        ib_search.setOnTouchListener(new View.OnTouchListener() {
+           @Override
+            public boolean onTouch(View v, MotionEvent ev) {
+               switch(ev.getAction()) {
+                   case MotionEvent.ACTION_DOWN:
+                       ib_search.setAlpha((float)0.1);
+                       break;
+                   case MotionEvent.ACTION_UP:
+                       ib_search.setAlpha((float)1.0);
+
+                       searchList.clear();
+                       adapter.clearItem();
+                       itemList.clear();
+
+                       String searchWord=et_search.getText().toString();
+                       for(int i=0; i<filteredList.size(); i++) {
+                           if(filteredList.get(i).getName().indexOf(searchWord)>=0)
+                               searchList.add(filteredList.get(i));
+                       }
+                       setItemList(searchList);
+                       for(RestaurantItem rItem : itemList) {
+                           adapter.addItem(rItem);
+                       }
+                       adapter.notifyDataSetChanged();
+                       list_store.setAdapter(adapter);
+                       imm.hideSoftInputFromWindow(et_search.getWindowToken(), 0);
+                       break;
+               }
+               return true;
+           }
         });
 
         ib_myPage.setOnTouchListener(new View.OnTouchListener() {
@@ -123,6 +173,7 @@ public class MainActivity extends AppCompatActivity {
                 switch(ev.getAction()) {
                     case MotionEvent.ACTION_DOWN:
                         sv_main.requestDisallowInterceptTouchEvent(true);
+                        imm.hideSoftInputFromWindow(et_search.getWindowToken(), 0);
                         initX=ev.getX();
                         break;
                     case MotionEvent.ACTION_UP:
@@ -264,14 +315,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void setItemList() {
+    private void setItemList(List<RestaurantVO> tempList) {
         String sName;
         String pNumber;
         int rCnt=0;
         float sScore=0;
         String prevURL;
 
-        for(RestaurantVO rVO : filteredList) {
+        for(RestaurantVO rVO : tempList) {
             sName=rVO.getName();
             pNumber=rVO.getPhone();
             StringTokenizer setImgURL=new StringTokenizer(rVO.getImageURL(), "$");
@@ -296,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        setItemList();
+        setItemList(filteredList);
         for(RestaurantItem rItem : itemList) {
             adapter.addItem(rItem);
         }

@@ -119,7 +119,7 @@
                         android:layout_height="match_parent"
                         android:background="@drawable/border_ib"
                         android:scaleType="fitCenter"
-                        app:srcCompat="@android:drawable/ic_search_category_default" />
+                        app:srcCompat="@android:drawable/ic_search_category_default"/>
 
                     <EditText
                         android:id="@+id/et_search"
