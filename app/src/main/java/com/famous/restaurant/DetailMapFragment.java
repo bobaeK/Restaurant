@@ -1,7 +1,6 @@
 package com.famous.restaurant;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,24 +17,29 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 /**
- * Created by USER on 2017-12-08.
+ * Created by BOBAE on 2017-12-08.
  */
 
 public class DetailMapFragment extends Fragment implements OnMapReadyCallback{
     View view;
     MapView mapView;
+    float latitude;
+    float logitude;
 
     public DetailMapFragment() {
     }
-
+    public DetailMapFragment(float latitude, float logitude){
+        this.latitude=latitude;
+        this.logitude=logitude;
+    }
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
+    public void onCreate( Bundle savedInstanceState) {
         setHasOptionsMenu(true);
         super.onCreate(savedInstanceState);
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.detail_map_fragment, container, false);
         mapView = (MapView)view.findViewById(R.id.mapview);
         mapView.onCreate(savedInstanceState);
@@ -70,10 +74,11 @@ public class DetailMapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // Updates the location and zoom of the MapView
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(35.141233, 126.925594), 14);
+        LatLng latLng = new LatLng(37.49524,126.95608);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 14);
         googleMap.animateCamera(cameraUpdate);
         googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(35.141233, 126.925594))
-                .title("루프리코리아"));
+                .position(latLng)
+                .title("청년다방"));
     }
 }
