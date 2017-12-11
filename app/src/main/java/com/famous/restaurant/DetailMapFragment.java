@@ -1,5 +1,7 @@
 package com.famous.restaurant;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -26,13 +28,11 @@ public class DetailMapFragment extends Fragment implements OnMapReadyCallback{
     String restuarantName;
     float latitude;
     float logitude;
-
+    GoogleMap googleMap;
     public DetailMapFragment() {
-        this.latitude = (float)37.50094;
-        this.logitude = (float)126.95025;
-        this.restuarantName = "지코바 치킨";
+        this((float)37.50094, (float)126.95025, "지코바 치킨");
     }
-    public DetailMapFragment(float latitude, float logitude, String restuarantName){
+    public DetailMapFragment( float latitude, float logitude, String restuarantName){
         this.latitude=latitude;
         this.logitude=logitude;
         this.restuarantName = restuarantName;
@@ -48,6 +48,10 @@ public class DetailMapFragment extends Fragment implements OnMapReadyCallback{
 
     public float getLogitude() {
         return logitude;
+    }
+
+    public GoogleMap getGoogleMap() {
+        return googleMap;
     }
 
     public void setRestuarantName(String restuarantName) {
@@ -105,10 +109,12 @@ public class DetailMapFragment extends Fragment implements OnMapReadyCallback{
     public void onMapReady(GoogleMap googleMap) {
         // Updates the location and zoom of the MapView
         LatLng latLng = new LatLng(latitude,logitude);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 14);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         googleMap.animateCamera(cameraUpdate);
         googleMap.addMarker(new MarkerOptions()
                 .position(latLng)
                 .title(restuarantName));
+        this.googleMap = googleMap;
     }
+
 }

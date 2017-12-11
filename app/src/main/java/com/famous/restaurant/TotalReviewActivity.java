@@ -58,7 +58,9 @@ public class TotalReviewActivity extends AppCompatActivity {
             }
         });
     }
-
+    public void onBackButtonClicked(View view){
+        finish();
+    }
     private class TotalReviewAdapter extends BaseAdapter{
         private ArrayList<TotalReviewItem> items = new ArrayList<TotalReviewItem>();
 
