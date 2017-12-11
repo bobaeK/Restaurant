@@ -13,40 +13,37 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Toast;
 
-
-import com.google.android.gms.maps.MapView;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
     public final static int MY_PERMISSIONS = 1;
     private DetailMapFragment detailMapFragment = null;
     private ArrayList<String> images = new ArrayList<String>();
+    RestaurantVO selectedRestaurant;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        /*
-        Intent intent=getIntent();
-        RestaurantVO sRestaurantVO=intent.getParcelableExtra("SELECTED_ITEM");
-        Toast.makeText(getApplicationContext(), sRestaurantVO.getName(), Toast.LENGTH_SHORT).show();
-        */
 
-        float latitude = (float)37.50094;
-        float longitude = (float)126.95025;
+        Intent intent = getIntent();
+        selectedRestaurant = intent.getParcelableExtra("SELECTED_ITEM");
+        Log.d("selectedRestaurant", selectedRestaurant.getName());
+
+
+        float latitude = (float) 37.50094;
+        float longitude = (float) 126.95025;
         String restaurantName = "지코바 치킨";
+
         //이 조건문 왜 쓰는지 모름,,
         if (savedInstanceState == null) {
-            detailMapFragment = new DetailMapFragment(getApplicationContext(),latitude, longitude, restaurantName);
+            detailMapFragment = new DetailMapFragment(getApplicationContext(), latitude, longitude, restaurantName);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.map_fragment, detailMapFragment, "detail_map")
@@ -57,6 +54,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -97,17 +95,17 @@ public class DetailActivity extends AppCompatActivity {
     public void onAddPlaceClicked(View view) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)||ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION) || ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 new AlertDialog.Builder(this).setTitle("Request Permission Rationale")
-                                            .setMessage("인증을 위해서는 gps 허용을 설정해야 합니다.")
-                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    ActivityCompat.requestPermissions(DetailActivity.this,
-                                                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION}
-                                                            ,MY_PERMISSIONS);
-                                                }
-                                            });
+                        .setMessage("인증을 위해서는 gps 허용을 설정해야 합니다.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(DetailActivity.this,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}
+                                        , MY_PERMISSIONS);
+                            }
+                        });
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS);
             }
@@ -124,25 +122,61 @@ public class DetailActivity extends AppCompatActivity {
         boolean isNetworkEnabled = locationManager.isProviderEnabled("network");
 
         Location location = null;
-        if(isGPSEnabled)
+        if (isGPSEnabled)
             location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        else if(isNetworkEnabled)
+        else if (isNetworkEnabled)
             location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        else{
+        else {
             Toast.makeText(getApplicationContext(), "위치정보를 가져올 수 없습니다. 네트워크상태를 확인해 주세요!", Toast.LENGTH_SHORT);
             return;
         }
-        Log.i("MyGPSInfo", "gps_enable : "+isGPSEnabled+" network_enable : "+isNetworkEnabled);
+        Log.i("MyGPSInfo", "gps_enable : " + isGPSEnabled + " network_enable : " + isNetworkEnabled);
         Log.i("MyGPSInfo", "longitude : " + location.getLongitude() + " latitude : " + location.getLatitude());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(DetailActivity.this);
+        double gapLatitude = location.getLatitude() - selectedRestaurant.getLatitude();
+        double gapLongitude = location.getLongitude() - selectedRestaurant.getLongitude();
+        Log.d("gapLatitude", Double.toString(gapLatitude));
+        Log.d("gapLongitude", Double.toString(gapLongitude));
+        if (Math.abs(gapLatitude) < 0.00001 && Math.abs(gapLongitude) < 0.00001) {
+            builder.setTitle("인증 완료");
+            builder.setMessage(selectedRestaurant.getName() + "이(가) 가본 음식점으로 인증되었습니다!" +
+                    " 후기를 작성하시겠습니까");
+            builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(getApplicationContext(), "확인", Toast.LENGTH_LONG).show();
+                }
+            });
+            builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(getApplicationContext(), "취소", Toast.LENGTH_LONG).show();
+                }
+            });
+        } else {
+            builder.setTitle("인증 실패");
+            builder.setMessage(selectedRestaurant.getName() + " 의 위치와 현재 위치가 일치하지 않습니다!");
+            builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(getApplicationContext(), "확인", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+        builder.show();
     }
+
     //후기등록
-    public void onAddReviewClicked(View view){
+    public void onAddReviewClicked(View view) {
 
     }
+
     //뒤로가기
-    public void onBackButtonClicked(View view){
+    public void onBackButtonClicked(View view) {
         finish();
     }
+
     //상세보기화면 이미지 리스트뷰 어답터
     private class DetailImagedapter extends BaseAdapter {
         private ArrayList<DetailImageItem> items = new ArrayList<DetailImageItem>();
@@ -166,12 +200,15 @@ public class DetailActivity extends AppCompatActivity {
         public View getView(int position, View convertView, ViewGroup parent) {
             DetailPictureItemView view = (DetailPictureItemView) convertView;
 
-            if(convertView == null)
+            if (convertView == null)
                 view = new DetailPictureItemView(getApplicationContext());
             DetailImageItem item = items.get(position);
             view.setImage(item.getImage());
             return view;
         }
-        void addItem(DetailImageItem item){ items.add(item); }
+
+        void addItem(DetailImageItem item) {
+            items.add(item);
+        }
     }
 }
