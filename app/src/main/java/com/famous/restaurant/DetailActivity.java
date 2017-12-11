@@ -32,13 +32,16 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        Intent intent=getIntent();
-        RestaurantVO sRestaurantVO=intent.getParcelableExtra("SELECTED_ITEM");
-        Toast.makeText(getApplicationContext(), sRestaurantVO.getName(), Toast.LENGTH_SHORT).show();
+ //       Intent intent=getIntent();
+  //      RestaurantVO sRestaurantVO=intent.getParcelableExtra("SELECTED_ITEM");
+     //   Toast.makeText(getApplicationContext(), sRestaurantVO.getName(), Toast.LENGTH_SHORT).show();
 
+        float latitude = (float)37.50094;
+        float logitude = (float)126.95025;
+        String restuarantName = "지코바 치킨";
         //이 조건문 왜 쓰는지 모름,,
         if (savedInstanceState == null) {
-            DetailMapFragment detailMapFragment = new DetailMapFragment();
+            DetailMapFragment detailMapFragment = new DetailMapFragment(latitude, logitude, restuarantName);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.map_fragment, detailMapFragment, "detail_map")

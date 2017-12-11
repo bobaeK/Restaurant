@@ -23,15 +23,45 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class DetailMapFragment extends Fragment implements OnMapReadyCallback{
     View view;
     MapView mapView;
+    String restuarantName;
     float latitude;
     float logitude;
 
     public DetailMapFragment() {
+        this.latitude = (float)37.50094;
+        this.logitude = (float)126.95025;
+        this.restuarantName = "지코바 치킨";
     }
-    public DetailMapFragment(float latitude, float logitude){
+    public DetailMapFragment(float latitude, float logitude, String restuarantName){
         this.latitude=latitude;
         this.logitude=logitude;
+        this.restuarantName = restuarantName;
     }
+
+    public String getRestuarantName() {
+        return restuarantName;
+    }
+
+    public float getLatitude() {
+        return latitude;
+    }
+
+    public float getLogitude() {
+        return logitude;
+    }
+
+    public void setRestuarantName(String restuarantName) {
+        this.restuarantName = restuarantName;
+    }
+
+    public void setLatitude(float latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLogitude(float logitude) {
+        this.logitude = logitude;
+    }
+
     @Override
     public void onCreate( Bundle savedInstanceState) {
         setHasOptionsMenu(true);
@@ -74,11 +104,11 @@ public class DetailMapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // Updates the location and zoom of the MapView
-        LatLng latLng = new LatLng(37.49524,126.95608);
+        LatLng latLng = new LatLng(latitude,logitude);
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 14);
         googleMap.animateCamera(cameraUpdate);
         googleMap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .title("청년다방"));
+                .title(restuarantName));
     }
 }
