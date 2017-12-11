@@ -1,5 +1,44 @@
-<fragment xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/map"
-    android:name="com.google.android.gms.maps.SupportMapFragment"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" />
+    android:layout_height="match_parent">
+    <!--상단 툴바-->
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:id="@+id/back_button"
+                android:onClick="onBackButtonClicked"
+                app:srcCompat="@drawable/ic_back_24dp"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="음식점 지도"
+                android:textSize="9pt"
+                android:textColor="#ffffffff"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+    </android.support.v7.widget.Toolbar>
+    <!--지도-->
+    <FrameLayout
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:id="@+id/map_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:onClick="onBackButtonClicked">
+    </FrameLayout>
+</LinearLayout>

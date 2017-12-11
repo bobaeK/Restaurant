@@ -23,6 +23,7 @@ public class TotalReviewItemView extends LinearLayout{
     private TextView realReview;
     private RatingBar ratingBar;
     private TextView review;
+    private TextView moreView;
     private ArrayList<ImageView> images;
     public TotalReviewItemView(Context context) {
         super(context);
@@ -42,6 +43,7 @@ public class TotalReviewItemView extends LinearLayout{
         realReview = (TextView)findViewById(R.id.real_review);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         review = (TextView)findViewById(R.id.review);
+        moreView = (TextView)findViewById(R.id.more_view);
         images = new ArrayList<ImageView>();
         images.add((ImageView)findViewById(R.id.image1));
         images.add((ImageView)findViewById(R.id.image2));
@@ -50,6 +52,13 @@ public class TotalReviewItemView extends LinearLayout{
 
 
     }
+    public TextView getMoreView(){
+        return moreView;
+    }
+    public TextView getReview() {
+        return review;
+    }
+
     public void setId(String id){ this.id.setText(id); }
     public void setDate(String date){ this.date.setText(date); }
     public void setRealReview(boolean realReview){
