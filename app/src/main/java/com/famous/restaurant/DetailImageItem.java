@@ -1,20 +1,22 @@
 package com.famous.restaurant;
 
+import android.content.Context;
+
 /**
  * Created by BOBAE on 2017-12-09.
  */
 
 public class DetailImageItem {
-    int image;
+    String image;
 
-    public DetailImageItem(int image) {
+    public DetailImageItem(String image) {
         this.image = image;
     }
-    public void setImage(int image) {
+    public void setImage(String image) {
         this.image = image;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 }

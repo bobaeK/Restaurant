@@ -7,13 +7,14 @@ import android.view.LayoutInflater;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
+
 /**
  * Created by BOBAE on 2017-12-08.
  */
 
 public class DetailPictureItemView extends LinearLayout{
     ImageView imageView;
-
     public DetailPictureItemView(Context context) {
         super(context);
         init(context);
@@ -30,7 +31,7 @@ public class DetailPictureItemView extends LinearLayout{
 
     }
     /*이미지 set*/
-    void setImage(int resId) {
-        imageView.setImageResource(resId);
+    void setImage(String url) {
+        Glide.with(getContext()).load(url).into(imageView);
     }
 }

@@ -2,7 +2,9 @@ package com.famous.restaurant;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -12,30 +14,31 @@ import android.widget.TextView;
  */
 
 public class TotalReviewItemView extends LinearLayout{
-    TextView id;
-    TextView date;
-    TextView realReview;
-    TextView rating;
-    RatingBar ratingBar;
-    TextView review;
+    private TextView id;
+    private TextView date;
+    private TextView realReview;
+    private RatingBar ratingBar;
+    private TextView review;
 
     public TotalReviewItemView(Context context) {
         super(context);
+        init(context);
     }
 
     public TotalReviewItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(context);
     }
     private void init(Context context){
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.activity_total_review, this, true);
+        inflater.inflate(R.layout.total_review_item, this, true);
 
         id = (TextView)findViewById(R.id.id);
         date = (TextView)findViewById(R.id.date);
         realReview = (TextView)findViewById(R.id.real_review);
-        rating = (TextView)findViewById(R.id.rating);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         review = (TextView)findViewById(R.id.review);
+
 
     }
     public void setId(String id){ this.id.setText(id); }
@@ -48,5 +51,7 @@ public class TotalReviewItemView extends LinearLayout{
         }
     }
     public void setRatingBar(float rating){ this.ratingBar.setRating(rating); }
-    public void setReview(String review){ this.review.setText(review); }
+    public void setReview(String review){
+        this.review.setText(review);
+    }
 }
