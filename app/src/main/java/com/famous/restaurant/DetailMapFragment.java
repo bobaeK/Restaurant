@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,17 +24,19 @@ import com.google.android.gms.maps.model.MarkerOptions;
  */
 
 public class DetailMapFragment extends Fragment implements OnMapReadyCallback{
+    enum Check {MapActivity, DetailActivity}
     private View view;
     private MapView mapView;
     private String restaurantName;
     private float latitude;
     private float longitude;
     private Context context;
-
-    public DetailMapFragment(Context context) {
-        this(context,(float)37.50094, (float)126.95025, "지코바 치킨");
+    private Check check;
+    public DetailMapFragment(Check check, Context context) {
+        this(check, context,(float)37.50094, (float)126.95025, "지코바 치킨");
     }
-    public DetailMapFragment(Context context, float latitude, float logitude, String restuarantName){
+    public DetailMapFragment(Check check, Context context, float latitude, float logitude, String restuarantName){
+        this.check = check;
         this.context = context;
         this.latitude=latitude;
         this.longitude=logitude;
@@ -107,21 +110,30 @@ public class DetailMapFragment extends Fragment implements OnMapReadyCallback{
     public void onMapReady(GoogleMap googleMap) {
         // Updates the location and zoom of the MapView
         LatLng latLng = new LatLng(latitude,longitude);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
-        googleMap.animateCamera(cameraUpdate);
-        googleMap.addMarker(new MarkerOptions()
-                .position(latLng)
-                .title(restaurantName));
-        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-            @Override
-            public void onMapClick(LatLng latLng) {
-                Intent intent = new Intent(context, MapActivity.class);
-                intent.putExtra("latitude", latitude);
-                intent.putExtra("longitude", longitude);
-                intent.putExtra("restaurantName", restaurantName);
-                context.startActivity(intent);
-            }
-        });
+        if(check == Check.DetailActivity) {
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15
+            );
+            googleMap.animateCamera(cameraUpdate);
+            googleMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .title(restaurantName));
+            googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                @Override
+                public void onMapClick(LatLng latLng) {
+                    Intent intent = new Intent(context, MapActivity.class);
+                    intent.putExtra("latitude", latitude);
+                    intent.putExtra("longitude", longitude);
+                    intent.putExtra("restaurantName", restaurantName);
+                    context.startActivity(intent);
+                }
+            });
+        }else if(check == Check.MapActivity){
+            CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 18);
+            googleMap.animateCamera(cameraUpdate);
+            googleMap.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .title(restaurantName));
+        }
     }
 
 }

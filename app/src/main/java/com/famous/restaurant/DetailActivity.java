@@ -19,21 +19,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Toast;
-
-
-import com.google.android.gms.maps.MapView;
-
 import java.util.ArrayList;
-import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
     public final static int MY_PERMISSIONS = 1;
-    private DetailMapFragment detailMapFragment = null;
     private ArrayList<String> images = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DetailMapFragment detailMapFragment;
         setContentView(R.layout.activity_detail);
         /*
         Intent intent=getIntent();
@@ -46,7 +41,7 @@ public class DetailActivity extends AppCompatActivity {
         String restaurantName = "지코바 치킨";
         //이 조건문 왜 쓰는지 모름,,
         if (savedInstanceState == null) {
-            detailMapFragment = new DetailMapFragment(getApplicationContext(),latitude, longitude, restaurantName);
+            detailMapFragment = new DetailMapFragment(DetailMapFragment.Check.DetailActivity, getApplicationContext(),latitude, longitude, restaurantName);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.map_fragment, detailMapFragment, "detail_map")
@@ -143,6 +138,7 @@ public class DetailActivity extends AppCompatActivity {
     public void onBackButtonClicked(View view){
         finish();
     }
+
     //상세보기화면 이미지 리스트뷰 어답터
     private class DetailImagedapter extends BaseAdapter {
         private ArrayList<DetailImageItem> items = new ArrayList<DetailImageItem>();

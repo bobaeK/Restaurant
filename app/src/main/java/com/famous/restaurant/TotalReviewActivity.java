@@ -1,7 +1,9 @@
 package com.famous.restaurant;
 
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -91,6 +93,24 @@ public class TotalReviewActivity extends AppCompatActivity {
             view.setRatingBar(item.getRatingBar());
             view.setRealReview(item.isRealReview());
             view.setReview(item.getReview());
+            int num=((TextView)view.findViewById(R.id.review)).getLineCount();
+            Log.i("LineNum(BB)",String.valueOf(num));
+
+            TextView textView = (TextView)findViewById(R.id.review);
+
+            if (ViewCompat.isLaidOut(view)) {
+                Log.d("TEXTVIEW", "line count : " + textView.getLineCount());
+            } else {
+                final TextView postTextView = view.getReview();
+                final TextView moreView = view.getMoreView();
+                postTextView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("TEXTVIEW", "line count : " + postTextView.getLineCount());
+                    }
+                });
+            }
+
 
             return view;
         }
