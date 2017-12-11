@@ -3,14 +3,13 @@ package com.famous.restaurant;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -21,6 +20,9 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
+        Intent intent=getIntent();
+        RestaurantVO sRestaurantVO=intent.getParcelableExtra("SELECTED_ITEM");
+        Toast.makeText(getApplicationContext(), sRestaurantVO.getName(), Toast.LENGTH_SHORT).show();
 
         //이 조건문 왜 쓰는지 모름,,
         if (savedInstanceState == null) {

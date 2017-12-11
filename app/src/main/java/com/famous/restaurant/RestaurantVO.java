@@ -1,10 +1,13 @@
 package com.famous.restaurant;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Jin on 2017-12-09.
  */
 
-public class RestaurantVO {
+public class RestaurantVO implements Parcelable {
     private String name;
     private String category;
     private double latitude;
@@ -14,6 +17,32 @@ public class RestaurantVO {
     private String businessHours;
     private String menuList;
     private String imageURL;
+
+    public RestaurantVO(Parcel in) {
+        name=in.readString();
+        category=in.readString();
+        latitude=in.readDouble();
+        longitude=in.readDouble();
+        phone=in.readString();
+        address=in.readString();
+        businessHours=in.readString();
+        menuList=in.readString();
+        imageURL=in.readString();
+    }
+
+    public RestaurantVO() {}
+
+    public static final Creator<RestaurantVO> CREATOR = new Creator<RestaurantVO>() {
+        @Override
+        public RestaurantVO createFromParcel(Parcel in) {
+            return new RestaurantVO(in);
+        }
+
+        @Override
+        public RestaurantVO[] newArray(int size) {
+            return new RestaurantVO[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -85,5 +114,24 @@ public class RestaurantVO {
 
     public void setImageURL(String imageURL) {
         this.imageURL = imageURL;
+    }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(category);
+        dest.writeDouble(latitude);
+        dest.writeDouble(longitude);
+        dest.writeString(phone);
+        dest.writeString(address);
+        dest.writeString(businessHours);
+        dest.writeString(menuList);
+        dest.writeString(imageURL);
     }
 }

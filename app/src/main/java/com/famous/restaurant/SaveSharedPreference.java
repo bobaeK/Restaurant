@@ -12,7 +12,7 @@ public class SaveSharedPreference {
     static final String PREF_USER_NAME= "users";
     static SharedPreferences getSharedPreferences(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx);
-    }
+}
 
     public static void setUserName(Context ctx, String userName) {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();

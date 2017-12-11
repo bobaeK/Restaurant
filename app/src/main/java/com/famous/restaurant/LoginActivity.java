@@ -52,8 +52,6 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-
-
             mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -70,6 +68,7 @@ public class LoginActivity extends AppCompatActivity {
                                 SaveSharedPreference.setUserName( LoginActivity.this , checkMember.getId());
 
                                 Toast.makeText(getApplicationContext(),"로그인 되었습니다.",Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                 return;
                             }
                         }

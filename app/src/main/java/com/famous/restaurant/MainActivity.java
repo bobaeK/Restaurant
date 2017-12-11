@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -63,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
         final ImageButton ib_myPage=(ImageButton)findViewById(R.id.ib_myPage);
         final ScrollView sv_main=(ScrollView)findViewById(R.id.sv_main);
         final ImageButton ib_search=(ImageButton)findViewById(R.id.ib_search);
+        final TextView tv_title=(TextView)findViewById(R.id.tv_title);
+        final String userName;
         list_store=(ListView)findViewById(R.id.lv_store);
         tv_category=(TextView)findViewById(R.id.tv_category);
         et_search=(EditText)findViewById(R.id.et_search);
@@ -71,6 +72,9 @@ public class MainActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setMessage("데이터 불러오는 중...");
         progressDialog.show();
+
+        userName=SaveSharedPreference.getUserName(MainActivity.this);
+        tv_title.setText(userName+" 님의 맛집보장");
 
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
@@ -260,8 +264,15 @@ public class MainActivity extends AppCompatActivity {
         list_store.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                Intent intent=new Intent(getApplicationContext(), DetailActivity.class);
                 RestaurantItem item=(RestaurantItem)adapter.getItem(position);
-                Toast.makeText(getApplicationContext(), "선택 : "+item.getStoreName(), Toast.LENGTH_LONG).show();
+                RestaurantVO sRestaurantVO=null;
+                for(int i=0; i<filteredList.size(); i++) {
+                    if(item.getStoreName().equals(filteredList.get(i).getName()))
+                        sRestaurantVO=filteredList.get(i);
+                }
+                intent.putExtra("SELECTED_ITEM", sRestaurantVO);
+                startActivity(intent);
             }
         });
 

@@ -59,13 +59,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="인증하기"
-                android:id="@+id/Confirm_btn"/>
+                android:id="@+id/Confirm_btn"
+                android:onClick="onAddPlaceClicked"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="후기등록"
-                android:id="@+id/register_btn"/>
+                android:id="@+id/register_btn"
+                android:onClick="onAddReviewClicked"/>
         </TableRow>
     </TableLayout>
 </LinearLayout>
