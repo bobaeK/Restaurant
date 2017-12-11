@@ -1,25 +1,36 @@
 package com.famous.restaurant;
 
+import java.util.ArrayList;
+
 /**
  * Created by BOBAE on 2017-12-08.
  */
 
 public class TotalReviewItem {
+    String reviewId;
     String id;
     String date;
     boolean realReview;
     float ratingBar;
     String review;
+    ArrayList<String> imageUrl;
 
-    public TotalReviewItem(String id, String date,
+    public TotalReviewItem(String reviewId, String id, String date,
                            boolean realReview,
                            float ratingBar,
-                           String review) {
+                           String review,
+                           ArrayList<String> imageUrl) {
+        this.reviewId = reviewId;
         this.id = id;
         this.date = date;
         this.realReview = realReview;
         this.ratingBar = ratingBar;
         this.review = review;
+        this.imageUrl = imageUrl;
+    }
+
+    public String getReviewId() {
+        return reviewId;
     }
 
     public String getId() {
@@ -42,6 +53,14 @@ public class TotalReviewItem {
         return review;
     }
 
+    public ArrayList<String> getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setReviewId(String reviewId) {
+        this.reviewId = reviewId;
+    }
+
     public void setId(String id) {
         this.id = id;
     }
@@ -60,5 +79,9 @@ public class TotalReviewItem {
 
     public void setReview(String review) {
         this.review = review;
+    }
+
+    public void setImageUrl(ArrayList<String> imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }

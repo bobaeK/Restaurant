@@ -1,16 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.famous.restaurant">
-    <!--for using gps-->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET" />
 
-    <!--for using map-->
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
+    <!-- for using map -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- 상세위치가져오기 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> <!-- 대략적위치가져오기 -->
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -31,17 +27,17 @@
 
         <!-- 형진 activity -->
         <activity android:name=".MainActivity" />
-        <activity android:name=".DetailActivity" />
-        <activity android:name=".MypageActivity"/>
-        <!-- 보배 activity-->
-        <activity android:name=".LoadingActivity">
+        <activity android:name=".LoadingActivity" />
+        <activity android:name=".MypageActivity" />
+        <!-- 보배 activity -->
+        <activity android:name=".DetailActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".TotalReviewActivity"/>
+        <activity android:name=".TotalReviewActivity" />
         <!-- 인영 activity -->
         <activity android:name=".LoginActivity" />
         <activity
@@ -55,6 +51,10 @@
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
         <activity android:name=".ChangePwdActivity"></activity>
         <activity android:name=".ReviewAddActivity"/>
+        <activity
+            android:name=".ImageActivity"
+            android:label="@string/title_activity_image"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
