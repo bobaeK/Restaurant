@@ -38,6 +38,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".TotalReviewActivity" />
+        <activity android:name=".MapActivity"/>
+        <activity
+            android:name=".ImageActivity"
+            android:label="@string/title_activity_image"
+            android:theme="@style/AppTheme"></activity>
         <!-- 인영 activity -->
         <activity android:name=".LoginActivity" />
         <activity
@@ -51,10 +56,6 @@
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
         <activity android:name=".ChangePwdActivity"></activity>
         <activity android:name=".ReviewAddActivity"/>
-        <activity
-            android:name=".ImageActivity"
-            android:label="@string/title_activity_image"
-            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
