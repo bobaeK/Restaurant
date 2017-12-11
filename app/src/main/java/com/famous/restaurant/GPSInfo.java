@@ -34,7 +34,7 @@ public class GPSInfo implements LocationListener{
         latitude = location.getLatitude();
 
         // Stop the update to prevent changing the location.
-        locationManager.removeUpdates( this );
+        //locationManager.removeUpdates( this );
     }
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {

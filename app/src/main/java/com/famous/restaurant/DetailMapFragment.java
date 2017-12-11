@@ -1,5 +1,7 @@
 package com.famous.restaurant;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -21,45 +23,45 @@ import com.google.android.gms.maps.model.MarkerOptions;
  */
 
 public class DetailMapFragment extends Fragment implements OnMapReadyCallback{
-    View view;
-    MapView mapView;
-    String restuarantName;
-    float latitude;
-    float logitude;
+    private View view;
+    private MapView mapView;
+    private String restaurantName;
+    private float latitude;
+    private float longitude;
+    private Context context;
 
-    public DetailMapFragment() {
-        this.latitude = (float)37.50094;
-        this.logitude = (float)126.95025;
-        this.restuarantName = "지코바 치킨";
+    public DetailMapFragment(Context context) {
+        this(context,(float)37.50094, (float)126.95025, "지코바 치킨");
     }
-    public DetailMapFragment(float latitude, float logitude, String restuarantName){
+    public DetailMapFragment(Context context, float latitude, float logitude, String restuarantName){
+        this.context = context;
         this.latitude=latitude;
-        this.logitude=logitude;
-        this.restuarantName = restuarantName;
+        this.longitude=logitude;
+        this.restaurantName = restuarantName;
     }
 
-    public String getRestuarantName() {
-        return restuarantName;
+    public String getRestaurantName() {
+        return restaurantName;
     }
 
     public float getLatitude() {
         return latitude;
     }
 
-    public float getLogitude() {
-        return logitude;
+    public float getLongitude() {
+        return longitude;
     }
 
-    public void setRestuarantName(String restuarantName) {
-        this.restuarantName = restuarantName;
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
     }
 
     public void setLatitude(float latitude) {
         this.latitude = latitude;
     }
 
-    public void setLogitude(float logitude) {
-        this.logitude = logitude;
+    public void setLongitude(float longitude) {
+        this.longitude = longitude;
     }
 
     @Override
@@ -104,11 +106,22 @@ public class DetailMapFragment extends Fragment implements OnMapReadyCallback{
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // Updates the location and zoom of the MapView
-        LatLng latLng = new LatLng(latitude,logitude);
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 14);
+        LatLng latLng = new LatLng(latitude,longitude);
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 15);
         googleMap.animateCamera(cameraUpdate);
         googleMap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .title(restuarantName));
+                .title(restaurantName));
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                Intent intent = new Intent(context, MapActivity.class);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("restaurantName", restaurantName);
+                context.startActivity(intent);
+            }
+        });
     }
+
 }

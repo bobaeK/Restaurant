@@ -20,38 +20,43 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Toast;
 
+
+import com.google.android.gms.maps.MapView;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class DetailActivity extends AppCompatActivity {
     public final static int MY_PERMISSIONS = 1;
-    private Location lastKnownLocation = null;
+    private DetailMapFragment detailMapFragment = null;
     private ArrayList<String> images = new ArrayList<String>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
- //       Intent intent=getIntent();
-  //      RestaurantVO sRestaurantVO=intent.getParcelableExtra("SELECTED_ITEM");
-     //   Toast.makeText(getApplicationContext(), sRestaurantVO.getName(), Toast.LENGTH_SHORT).show();
+        /*
+        Intent intent=getIntent();
+        RestaurantVO sRestaurantVO=intent.getParcelableExtra("SELECTED_ITEM");
+        Toast.makeText(getApplicationContext(), sRestaurantVO.getName(), Toast.LENGTH_SHORT).show();
+        */
 
         float latitude = (float)37.50094;
-        float logitude = (float)126.95025;
-        String restuarantName = "지코바 치킨";
+        float longitude = (float)126.95025;
+        String restaurantName = "지코바 치킨";
         //이 조건문 왜 쓰는지 모름,,
         if (savedInstanceState == null) {
-            DetailMapFragment detailMapFragment = new DetailMapFragment(latitude, logitude, restuarantName);
+            detailMapFragment = new DetailMapFragment(getApplicationContext(),latitude, longitude, restaurantName);
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.map_fragment, detailMapFragment, "detail_map")
                     .commit();
         }
+
         //이미지 ListView
 
 
     }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -67,15 +72,10 @@ public class DetailActivity extends AppCompatActivity {
         }
     }
 
-    //지도확대
-    public void onMapClicked() {
-
-    }
-
     //전화걸기
     public void onPhoneCallClicked(View view) {
-        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:010-1000-1000"));
-        startActivity(myIntent);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:010-1000-1000"));
+        startActivity(intent);
     }
 
     //사진확대
@@ -89,18 +89,16 @@ public class DetailActivity extends AppCompatActivity {
     public void onTotalReviewClicked(View view) {
         Intent intent = new Intent(this, TotalReviewActivity.class);
         //전체후기 볼 음식점 아이디 전달
-        intent.putExtra("restuarant_name", 1);
+        intent.putExtra("restaurant_name", 1);
         startActivity(intent);
     }
 
     //인증하기
     public void onAddPlaceClicked(View view) {
-
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)||ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
-                new AlertDialog.Builder(this).setTitle("Request Persmission Rationale")
+                new AlertDialog.Builder(this).setTitle("Request Permission Rationale")
                                             .setMessage("인증을 위해서는 gps 허용을 설정해야 합니다.")
                                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                                 @Override
@@ -117,15 +115,25 @@ public class DetailActivity extends AppCompatActivity {
         }
         // Update location to get.
         GPSInfo gpsInfo = GPSInfo.getInstance(this);
+
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationManager.removeUpdates(gpsInfo);    // Stop the update if it is in progress.
-        locationManager.requestLocationUpdates("gps", 0, 0, gpsInfo);
-        locationManager.requestLocationUpdates("network", 0, 0, gpsInfo);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 10000, gpsInfo);
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1, 100000, gpsInfo);
+
         boolean isGPSEnabled = locationManager.isProviderEnabled("gps");
         boolean isNetworkEnabled = locationManager.isProviderEnabled("network");
-        Log.i("MyGPSInfo", "gps_enable : "+isGPSEnabled+" network_enable : "+isNetworkEnabled);
-        Log.i("MyGPSInfo", "longitude : " + gpsInfo.getLongitude() + " latitude : " + gpsInfo.getLatitude());
 
+        Location location = null;
+        if(isGPSEnabled)
+            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        else if(isNetworkEnabled)
+            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+        else{
+            Toast.makeText(getApplicationContext(), "위치정보를 가져올 수 없습니다. 네트워크상태를 확인해 주세요!", Toast.LENGTH_SHORT);
+            return;
+        }
+        Log.i("MyGPSInfo", "gps_enable : "+isGPSEnabled+" network_enable : "+isNetworkEnabled);
+        Log.i("MyGPSInfo", "longitude : " + location.getLongitude() + " latitude : " + location.getLatitude());
     }
     //후기등록
     public void onAddReviewClicked(View view){
