@@ -28,7 +28,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 
 public class ReviewAddActivity extends AppCompatActivity {
@@ -52,8 +51,6 @@ public class ReviewAddActivity extends AppCompatActivity {
     int Image_Request_Code = 7;
 
     ReviewVO insertVO;
-    String image_url[];
-    int image_url_cnt=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +84,6 @@ public class ReviewAddActivity extends AppCompatActivity {
         imageView = new ImageView[4];
         imageBitmap = new Bitmap[4];
         filePathUri = new Uri[4];
-        image_url = new String[4];
 
         imageView[0] = (ImageView)findViewById(R.id.imageView1);
         imageView[1] = (ImageView)findViewById(R.id.imageView2);
@@ -235,22 +231,10 @@ public class ReviewAddActivity extends AppCompatActivity {
 
             if(imageCnt>0){
                 // storage 에 저장
-                if(UploadImageFileToStorage(key)){
-                    ArrayList<String> imageList = new ArrayList<>();
-                    for(int i=0;i<image_url.length;i++){
-                        Toast.makeText(getApplicationContext(),image_url[i],Toast.LENGTH_SHORT);
-                        imageList.add(image_url[i]);
-                    }
-                    insertVO.setImageUri(imageList);
+                UploadImageFileToStorage(key);
+
                 }
             }
-
-            Toast.makeText(getApplicationContext(),image_url[0],Toast.LENGTH_SHORT).show();
-
-            // 객체 database 에 저장
-
-;
-
         }
 
         private boolean UploadImageFileToStorage(final String key) {
@@ -262,22 +246,8 @@ public class ReviewAddActivity extends AppCompatActivity {
                             @SuppressWarnings("VisibleForTests")
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-
-                                // Showing toast message after done uploading.
-                              //  Toast.makeText(getApplicationContext(), "Image Uploaded Successfully ", Toast.LENGTH_LONG).show();
-
-
-//                            ImageUploadInfo imageUploadInfo = new ImageUploadInfo(TempImageName, taskSnapshot.getDownloadUrl().toString());
-
-
-                                image_url[image_url_cnt] = taskSnapshot.getDownloadUrl().toString();
-                                //image_url_cnt++;
-                               // Log.e("superdroid",image_url[image_url_cnt-1]);
-
-
-                                mDatabase.child(key).child("imageUrl").push().setValue(image_url[image_url_cnt]);
-
-
+                                String img_url = taskSnapshot.getDownloadUrl().toString();
+                                mDatabase.child(key).child("imageUrl").push().setValue(img_url);
                             }
                         })
                         // If something goes wrong .
@@ -305,7 +275,6 @@ public class ReviewAddActivity extends AppCompatActivity {
 
             return key;
         }
-    }
 
 }
 
