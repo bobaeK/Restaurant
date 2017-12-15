@@ -106,23 +106,6 @@ public class TotalReviewActivity extends AppCompatActivity {
         // 이미지는 list형식으로 reviewList의 imageUri 에 넣음.
         // 이미지 개수는 imageCnt
 
-
-
-        adapter.addItem(new TotalReviewItem("1","gudwls12", "2017.09.09", true, (float)4.5, "매우 맛있어서 또 가고싶다", new ArrayList<String>()));
-        adapter.addItem(new TotalReviewItem("2","dlsdud2", "2017.09.10", false, (float)5.0, "매우 맛있어서 또 가고싶다", new ArrayList<String>()));
-        adapter.addItem(new TotalReviewItem("3","qhqokim", "2017.09.11", false, (float)4.0, "매우 맛있어서 도 가고싶다 " +
-                                                                                            "매우 맛있어서 또 가고싶다 " +
-                                                                                            "매우 맛있어서 또 가고싶다 " +
-                                                                                            "매우 맛있어서 또 가고싶다 " +
-                                                                                            "매우 맛있어서 또 가고싶다 " +
-                                                                                            "매우 맛있어서 또 가고싶다 " +
-                                                                                            "매우 맛있어서 또 가고싶다 " +
-                                                                                            "매우 맛있어서 도 가고싶다 " +
-                                                                                            "매우 맛있어서 도 가고싶다 " +
-                                                                                            "매우 맛있어서 도 가고싶다 " +
-                                                                                            "매우 맛있어서 도 가고싶다 " +
-                                                                                            "매우 맛있어서 도 가고싶다 " +
-                                                                                            "매우 맛있어서 도 가고싶다", new ArrayList<String>()));
         listView.setAdapter(adapter);
 
         //리얼후기 보기 스위치
@@ -135,7 +118,7 @@ public class TotalReviewActivity extends AppCompatActivity {
                 if(isChecked){
                     //리얼후기만 보기
                     //adapter.removeAll();
-                    for(ReviewVO r:list){
+                    for(ReviewVO r:reviewList){
 
                     }
                 }else{
