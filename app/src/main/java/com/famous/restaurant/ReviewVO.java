@@ -18,6 +18,8 @@ public class ReviewVO {
     private int imageCnt;
     private ArrayList<String> imageUri;
 
+    private String key;
+
     public ReviewVO(){
         imageUri = new ArrayList<String>();
     }
@@ -84,5 +86,13 @@ public class ReviewVO {
 
     public void setImageUri(ArrayList<String> imageUri) {
         this.imageUri = imageUri;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }
