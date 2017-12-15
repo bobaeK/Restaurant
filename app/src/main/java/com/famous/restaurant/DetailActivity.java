@@ -175,6 +175,40 @@ public class DetailActivity extends AppCompatActivity {
         }
         Log.i("MyGPSInfo", "gps_enable : "+isGPSEnabled+" network_enable : "+isNetworkEnabled);
         Log.i("MyGPSInfo", "longitude : " + location.getLongitude() + " latitude : " + location.getLatitude());
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(DetailActivity.this);
+        double gapLatitude = Math.abs(location.getLatitude() - restaurantVO.getLatitude());
+        double gapLongitude = Math.abs(location.getLongitude() - restaurantVO.getLongitude());
+        Log.d("gapLatitude", Double.toString(gapLatitude));
+        Log.d("gapLongitude", Double.toString(gapLongitude));
+        if (gapLatitude < 0.0005 && gapLongitude < 0.005) {
+            builder.setTitle("인증 완료");
+            builder.setMessage(restaurantVO.getName() + "이(가) 가본 음식점으로 인증되었습니다!" +
+                    " 후기를 작성하시겠습니까");
+            builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(getApplicationContext(), "확인", Toast.LENGTH_LONG).show();
+                }
+            });
+            builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(getApplicationContext(), "취소", Toast.LENGTH_LONG).show();
+                }
+            });
+        } else {
+            builder.setTitle("인증 실패");
+            builder.setMessage(restaurantVO.getName() + " 의 위치와 현재 위치가 일치하지 않습니다!");
+            builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toast.makeText(getApplicationContext(), "확인", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        builder.show();
     }
     //후기등록
     public void onAddReviewClicked(View view){
