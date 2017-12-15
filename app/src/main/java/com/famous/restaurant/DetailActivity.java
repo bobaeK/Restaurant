@@ -13,17 +13,11 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Display;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -74,16 +68,20 @@ public class DetailActivity extends AppCompatActivity {
             images.add(url);
         }
         for(String url : images) {
+            final String choice = url;
             ImageView imageView = new ImageView(this);
+
             //안드로이드 이미지 크기설정
             imageView.setLayoutParams(layoutParams);
             imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             //안드로이드 이미지 이벤트
             imageView.setOnClickListener(new View.OnClickListener() {
+
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(DetailActivity.this, ImageActivity.class);
                     intent.putStringArrayListExtra("images", images);
+                    intent.putExtra("choice_image", choice);
                     startActivity(intent);
                 }
             });
