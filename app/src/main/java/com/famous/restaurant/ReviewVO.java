@@ -12,7 +12,7 @@ public class ReviewVO {
     private String restaurant;
     private int rating_star;
     private String review_text;
-    private Date date;
+    private String date;
     private boolean authentication;
 
     private int imageCnt;
@@ -56,11 +56,11 @@ public class ReviewVO {
         this.review_text = review_text;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -94,5 +94,20 @@ public class ReviewVO {
 
     public void setKey(String key) {
         this.key = key;
+    }
+
+    @Override
+    public String toString() {
+        return "ReviewVO{" +
+                "user_id='" + user_id + '\'' +
+                ", restaurant='" + restaurant + '\'' +
+                ", rating_star=" + rating_star +
+                ", review_text='" + review_text + '\'' +
+                ", date=" + date +
+                ", authentication=" + authentication +
+                ", imageCnt=" + imageCnt +
+                ", imageUri=" + imageUri +
+                ", key='" + key + '\'' +
+                '}';
     }
 }

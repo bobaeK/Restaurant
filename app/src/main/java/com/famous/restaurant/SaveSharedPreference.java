@@ -27,6 +27,4 @@ public class SaveSharedPreference {
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
         editor.clear();
     }
-
-
 }

@@ -65,8 +65,7 @@ public class LoginActivity extends AppCompatActivity {
                             MemVO checkMember = memData.getValue(MemVO.class);
                             if(checkMember.getPassword().equals(input_pwd.getText().toString())){
 
-                                SaveSharedPreference.setUserName( LoginActivity.this , checkMember.getId());
-
+                                SaveSharedPreference.setUserName( LoginActivity.this , checkMember.getName());
                                 Toast.makeText(getApplicationContext(),"로그인 되었습니다.",Toast.LENGTH_SHORT).show();
                                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
                                 return;

@@ -12,6 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -22,6 +23,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,7 +32,7 @@ import static com.famous.restaurant.R.id.review;
 public class TotalReviewActivity extends AppCompatActivity {
     StorageReference storageReference;
     DatabaseReference mDatabase;
-    List<ReviewVO> reviewList;
+    final List<ReviewVO> reviewList = new ArrayList<ReviewVO>();
     String restaurant_name;
 
     @Override
@@ -44,15 +46,12 @@ public class TotalReviewActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         restaurant_name=intent.getStringExtra("restaurant_name");
-
-        mDatabase = FirebaseDatabase.getInstance().getReference("reviews");
+        //Toast.makeText(this, restaurant_name, Toast.LENGTH_SHORT).show();
+        FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+        mDatabase = firebaseDatabase.getReference("reviews");
         storageReference = FirebaseStorage.getInstance().getReference();
-        reviewList = new ArrayList<>();
-
         /* 데이터 setting */
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-
-
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
@@ -93,9 +92,8 @@ public class TotalReviewActivity extends AppCompatActivity {
                     }
                 }
 
-
+            listView.setAdapter(adapter);
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
@@ -105,7 +103,40 @@ public class TotalReviewActivity extends AppCompatActivity {
         // reviewList 안에 데이터 들어있음.
         // 이미지는 list형식으로 reviewList의 imageUri 에 넣음.
         // 이미지 개수는 imageCnt
+        Toast.makeText(this, "review_count"+reviewList.size(), Toast.LENGTH_SHORT).show();
+        //testData
+        ReviewVO r1 = new ReviewVO();
+        r1.setDate(new Date().toString());
+        r1.setAuthentication(true);
+        r1.setImageCnt(0);
+        r1.setImageUri(new ArrayList<String>());
+        r1.setRating_star(5);
+        r1.setReview_text("맛있다");
+        r1.setUser_id("hello");
+        r1.setRestaurant("The Kone");
+        ReviewVO r2 = new ReviewVO();
+        r2.setDate(new Date().toString());
+        r2.setAuthentication(true);
+        r2.setImageCnt(0);
+        r2.setImageUri(new ArrayList<String>());
+        r2.setRating_star(5);
+        r2.setReview_text("맛있다");
+        r2.setUser_id("hello");
+        r2.setRestaurant("The Kone");
+        ReviewVO r3 = new ReviewVO();
+        r3.setDate(new Date().toString());
+        r3.setAuthentication(false);
+        r3.setImageCnt(0);
+        r3.setImageUri(new ArrayList<String>());
+        r3.setRating_star(5);
+        r3.setReview_text("맛있다");
+        r3.setUser_id("hello");
+        r3.setRestaurant("The Kone");
+        reviewList.add(r1);
+        reviewList.add(r2);
+        reviewList.add(r3);
 
+        adapter.addItems(reviewList);
         listView.setAdapter(adapter);
 
         //리얼후기 보기 스위치
@@ -114,18 +145,25 @@ public class TotalReviewActivity extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 Log.i("MYSWITCH_STATE:", "state : "+isChecked);
-                adapter.items.clear();
+                //Toastx.makeText(TotalReviewActivity.this, "check"+isChecked, Toast.LENGTH_SHORT).show();
                 if(isChecked){
                     //리얼후기만 보기
-                    //adapter.removeAll();
+                    adapter.items = new ArrayList<ReviewVO>();
                     for(ReviewVO r:reviewList){
-
+                        if(r.isAuthentication()){
+                            adapter.addItem(r);
+                        }
                     }
                 }else{
                     //전체후기 보기
+                    Log.i("reviewList", reviewList.toString());
+                    adapter.addItems(reviewList);
                 }
+                adapter.notifyDataSetChanged();
             }
         });
+        realSwitch.setChecked(false);
+
     }
     public void onBackButtonClicked(View view){
         finish();
@@ -156,16 +194,16 @@ public class TotalReviewActivity extends AppCompatActivity {
                 view = new TotalReviewItemView(getApplicationContext());
             ReviewVO item = items.get(position);
             view.setId(item.getUser_id());
-            view.setDate(item.getDate().toString());
+            view.setDate(item.getDate());
             view.setRatingBar(item.getRating_star());
             view.setRealReview(item.isAuthentication());
             view.setReview(item.getReview_text());
             int num=((TextView)view.findViewById(R.id.review)).getLineCount();
             Log.i("LineNum(BB)",String.valueOf(num));
 
-            TextView textView = (TextView)findViewById(R.id.review);
+            //TextView textView = (TextView)findViewById(R.id.review);
 
-            if (ViewCompat.isLaidOut(view)) {
+            /*if (ViewCompat.isLaidOut(view)) {
                 Log.d("TEXTVIEW", "line count : " + textView.getLineCount());
             } else {
                 final TextView postTextView = view.getReview();
@@ -176,15 +214,16 @@ public class TotalReviewActivity extends AppCompatActivity {
                         Log.d("TEXTVIEW", "line count : " + postTextView.getLineCount());
                     }
                 });
-            }
+            }*/
 
 
             return view;
         }
-        void addItem(ReviewVO item){ items.add(item); }
-        void addItems(List<ReviewVO> items){ this.items = items; }
-        void removeAll(){
-            items.clear();
+        void addItem(ReviewVO item){
+            items.add(item);
+        }
+        void addItems(List<ReviewVO> items){
+            this.items = items;
         }
     }
 }
