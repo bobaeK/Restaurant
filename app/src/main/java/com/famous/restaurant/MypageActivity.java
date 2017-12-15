@@ -25,13 +25,11 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import static android.R.layout.simple_list_item_1;
 
 public class MypageActivity extends AppCompatActivity {
-    final static int MAX_LIST_NUM=6;
-    String[] certifiedStoreList=new String[MAX_LIST_NUM];
-    DatabaseReference mDatabase;
     String userName;
     String curPassword;
     TextView tv_userName;
@@ -39,6 +37,11 @@ public class MypageActivity extends AppCompatActivity {
     TextView tv_userEmail;
     TextView tv_userPhone;
     EditText et_curPassword;
+    DatabaseReference userDatabase;
+    DatabaseReference reviewDatabase;
+    DatabaseReference authDatabase;
+    List<String> certifiedStoreList=new ArrayList<>();
+    List<RegisteredReviewItem> reviewList=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +57,9 @@ public class MypageActivity extends AppCompatActivity {
         final Button bt_infoModify=(Button)findViewById(R.id.bt_infoModify);
 
         userName=SaveSharedPreference.getUserName(MypageActivity.this);
-        mDatabase = FirebaseDatabase.getInstance().getReference("users");
+        userDatabase = FirebaseDatabase.getInstance().getReference("users");
+        reviewDatabase = FirebaseDatabase.getInstance().getReference("reviews");
+        authDatabase = FirebaseDatabase.getInstance().getReference("authentication");
 
         tv_userName=(TextView)findViewById(R.id.tv_userName);
         tv_userId=(TextView)findViewById(R.id.tv_userId);
@@ -62,7 +67,7 @@ public class MypageActivity extends AppCompatActivity {
         tv_userPhone=(TextView)findViewById(R.id.tv_userPhone);
         et_curPassword=(EditText)findViewById(R.id.et_curPassword);
 
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+        userDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
@@ -80,6 +85,43 @@ public class MypageActivity extends AppCompatActivity {
                         curPassword=checkMember.getPassword();
                     }
                 }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        reviewDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    ReviewVO reviewVO = postSnapshot.getValue(ReviewVO.class);
+                    RegisteredReviewItem registeredReviewItem= new RegisteredReviewItem(reviewVO.getRestaurant()+" "+ reviewVO.getReview_text());
+                    reviewList.add(registeredReviewItem);
+                }
+                for(RegisteredReviewItem rItem : reviewList) {
+                    ReviewAdapter.addItem(rItem);
+                }
+                lv_reviewList.setAdapter(ReviewAdapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        authDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    int i=0;
+                    AuthenticationVO authenticationVO = postSnapshot.getValue(AuthenticationVO.class);
+                    certifiedStoreList.add(authenticationVO.getRestaurant()+" "+ authenticationVO.getDate());
+                }
+                lv_certifiedList.setAdapter(certifiedAdapter);
             }
 
             @Override
@@ -125,21 +167,6 @@ public class MypageActivity extends AppCompatActivity {
                 return true;
             }
         }) ;
-        certifiedStoreList[0]="마루스시 "+"2017/11/02";
-        certifiedStoreList[1]="마루스시 "+"2017/11/02";
-        certifiedStoreList[2]="마루스시 "+"2017/11/02";
-        certifiedStoreList[3]="마루스시 "+"2017/11/02";
-        certifiedStoreList[4]="마루스시 "+"2017/11/02";
-        certifiedStoreList[5]="마루스시 "+"2017/11/02";
-        lv_certifiedList.setAdapter(certifiedAdapter);
-
-        ReviewAdapter.addItem(new RegisteredReviewItem("마루스시 "+"2017/11/05 "+"사장님도 친절하시고 가게 분위기가 너무 좋았어요!"));
-        ReviewAdapter.addItem(new RegisteredReviewItem("마루스시 "+"2017/11/05 "+"사장님도 친절하시고 가게 분위기가 너무 좋았어요!"));
-        ReviewAdapter.addItem(new RegisteredReviewItem("마루스시 "+"2017/11/05 "+"사장님도 친절하시고 가게 분위기가 너무 좋았어요!"));
-        ReviewAdapter.addItem(new RegisteredReviewItem("마루스시 "+"2017/11/05 "+"사장님도 친절하시고 가게 분위기가 너무 좋았어요!"));
-        ReviewAdapter.addItem(new RegisteredReviewItem("마루스시 "+"2017/11/05 "+"사장님도 친절하시고 가게 분위기가 너무 좋았어요!"));
-        ReviewAdapter.addItem(new RegisteredReviewItem("마루스시 "+"2017/11/05 "+"사장님도 친절하시고 가게 분위기가 너무 좋았어요!"));
-        lv_reviewList.setAdapter(ReviewAdapter);
 
         lv_reviewList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

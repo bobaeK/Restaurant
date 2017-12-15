@@ -38,13 +38,19 @@ public class MainActivity extends AppCompatActivity {
     Integer[] foodImageIds={ 0, R.drawable.category, R.drawable.category0, R.drawable.category1, R.drawable.category2,
             R.drawable.category3, R.drawable.category4, R.drawable.category5 , R.drawable.category, 0};
 
-    DatabaseReference mDatabase;
+    DatabaseReference restaurantDatabase;
+    DatabaseReference reviewDatabase;
+    DatabaseReference authDatabase;
+
     ProgressDialog progressDialog;
 
     List<RestaurantVO> restaurantList=new ArrayList<>();
     List<RestaurantVO> filteredList=new ArrayList<>();
     List<RestaurantVO> searchList=new ArrayList<>();
     List<RestaurantItem> itemList=new ArrayList<>();
+
+    List<ReviewVO> reviewList=new ArrayList<>();
+    List<AuthenticationVO> authenticationList=new ArrayList<>();
 
     RestaurantAdapter adapter=new RestaurantAdapter();
     ListView list_store;
@@ -68,7 +74,10 @@ public class MainActivity extends AppCompatActivity {
         tv_category=(TextView)findViewById(R.id.tv_category);
         et_search=(EditText)findViewById(R.id.et_search);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference("restaurants");
+        restaurantDatabase = FirebaseDatabase.getInstance().getReference("restaurants");
+        reviewDatabase = FirebaseDatabase.getInstance().getReference("reviews");
+        authDatabase = FirebaseDatabase.getInstance().getReference("authentication");
+
         progressDialog = new ProgressDialog(MainActivity.this);
         progressDialog.setMessage("데이터 불러오는 중...");
         progressDialog.show();
@@ -76,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
         userName=SaveSharedPreference.getUserName(MainActivity.this);
         tv_title.setText(userName+" 님의 맛집보장");
 
-        mDatabase.addValueEventListener(new ValueEventListener() {
+        restaurantDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
@@ -84,11 +93,44 @@ public class MainActivity extends AppCompatActivity {
                     restaurantList.add(restaurant);
                     filteredList.add(restaurant);
                 }
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                progressDialog.dismiss();
+            }
+        });
+
+        reviewDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    ReviewVO review = postSnapshot.getValue(ReviewVO.class);
+                    reviewList.add(review);
+                }
+                progressDialog.dismiss();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                progressDialog.dismiss();
+            }
+        });
+
+        authDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    AuthenticationVO authentication= postSnapshot.getValue(AuthenticationVO.class);
+                    authenticationList.add(authentication);
+                }
                 setItemList(filteredList);
                 for(RestaurantItem rItem : itemList) {
                     adapter.addItem(rItem);
                 }
                 list_store.setAdapter(adapter);
+
                 progressDialog.dismiss();
             }
 
@@ -329,20 +371,38 @@ public class MainActivity extends AppCompatActivity {
     private void setItemList(List<RestaurantVO> tempList) {
         String sName;
         String pNumber;
-        int rCnt=0;
-        float sScore=0;
+        int authCnt;
+        int rCnt;
+        float starAvg;
         String prevURL;
 
         for(RestaurantVO rVO : tempList) {
+            rCnt=0;
+            starAvg=0;
+            authCnt=0;
+            for(ReviewVO review : reviewList) {
+                if(rVO.getName().equals(review.getRestaurant())) {
+                    rCnt++;
+                    starAvg=review.getRating_star();
+                }
+            }
+
+            for(AuthenticationVO auth : authenticationList) {
+                if(rVO.getName().equals(auth.getRestaurant())) {
+                    authCnt++;
+                }
+            }
+            if(rCnt!=0)
+                starAvg/=rCnt;
             sName=rVO.getName();
             pNumber=rVO.getPhone();
             StringTokenizer setImgURL=new StringTokenizer(rVO.getImageURL(), "$");
             prevURL=setImgURL.nextToken();
 
-            itemList.add(new RestaurantItem(sName, pNumber, rCnt, sScore, prevURL));
+            itemList.add(new RestaurantItem(sName, pNumber, authCnt, starAvg, prevURL));
         }
-
     }
+
 
     private void filterList(String category) {
         filteredList.clear();
@@ -398,4 +458,5 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+
 }

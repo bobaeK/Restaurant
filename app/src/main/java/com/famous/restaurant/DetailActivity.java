@@ -22,14 +22,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.StringTokenizer;
 
 public class DetailActivity extends AppCompatActivity {
     public final static int MY_PERMISSIONS = 1;
     private ArrayList<String> images = new ArrayList<String>();
     private RestaurantVO restaurantVO;
+    DatabaseReference authDatabase;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,6 +46,7 @@ public class DetailActivity extends AppCompatActivity {
         Intent intent = getIntent();
         restaurantVO = intent.getParcelableExtra("SELECTED_ITEM");
         Log.i("RESTAURANTVO(BB)", restaurantVO.toString());
+        authDatabase = FirebaseDatabase.getInstance().getReference("authentication");
 
         //이 조건문 왜 쓰는지 모름,,
         if (savedInstanceState == null) {
@@ -194,7 +202,36 @@ public class DetailActivity extends AppCompatActivity {
             builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Toast.makeText(getApplicationContext(), "취소", Toast.LENGTH_LONG).show();
+                    new AlertDialog.Builder(DetailActivity.this)
+                            .setTitle("인증완료")
+                            .setMessage("본인이 인증한 목록을 보고 싶다면 '마이페이지>인증목록'에서 확인하실 수 있습니다.")
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                    authDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            Calendar now = Calendar.getInstance();
+                                            String nowDate = now.get(Calendar.YEAR) + "/" +
+                                                    (now.get(Calendar.MONTH) + 1) + "/" + now.get(Calendar.DATE);
+
+                                            AuthenticationVO auth = new AuthenticationVO();
+                                            auth.setMem_id(SaveSharedPreference.getUserName(DetailActivity.this));
+                                            auth.setRestaurant(restaurantVO.getName());
+                                            auth.setReview_id("none");
+                                            auth.setDate(nowDate);
+
+                                            authDatabase.child(authDatabase.push().getKey()).setValue(auth);
+                                        }
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+                                }
+                            });
                 }
             });
         } else {
@@ -203,7 +240,7 @@ public class DetailActivity extends AppCompatActivity {
             builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Toast.makeText(getApplicationContext(), "확인", Toast.LENGTH_LONG).show();
+
                 }
             });
         }
