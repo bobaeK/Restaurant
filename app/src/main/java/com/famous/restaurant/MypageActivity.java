@@ -26,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import static android.R.layout.simple_list_item_1;
 
@@ -40,6 +41,7 @@ public class MypageActivity extends AppCompatActivity {
     DatabaseReference userDatabase;
     DatabaseReference reviewDatabase;
     DatabaseReference authDatabase;
+
     List<String> certifiedStoreList=new ArrayList<>();
     List<RegisteredReviewItem> reviewList=new ArrayList<>();
 
@@ -187,8 +189,11 @@ public class MypageActivity extends AppCompatActivity {
         lv_certifiedList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent=new Intent(getApplicationContext(), DetailActivity.class);
                 String item=certifiedAdapter.getItem(position);
-                Toast.makeText(getApplicationContext(), "선택 : "+item, Toast.LENGTH_LONG).show();
+                StringTokenizer restaurantName=new StringTokenizer(item, " ");
+                intent.putExtra("SELECTED_ITEM", restaurantName.nextToken());
+                startActivity(intent);
             }
         });
 

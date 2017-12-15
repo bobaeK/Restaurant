@@ -313,7 +313,7 @@ public class MainActivity extends AppCompatActivity {
                     if(item.getStoreName().equals(filteredList.get(i).getName()))
                         sRestaurantVO=filteredList.get(i);
                 }
-                intent.putExtra("SELECTED_ITEM", sRestaurantVO);
+                intent.putExtra("SELECTED_ITEM", sRestaurantVO.getName());
                 startActivity(intent);
             }
         });
