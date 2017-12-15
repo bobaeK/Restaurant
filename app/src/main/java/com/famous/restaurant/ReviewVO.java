@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class ReviewVO {
     private String user_id;
     private String restaurant;
-    private int rating_star;
+    private float rating_star;
     private String review_text;
     private String date;
     private boolean authentication;
@@ -39,11 +39,11 @@ public class ReviewVO {
         this.restaurant = restaurant;
     }
 
-    public int getRating_star() {
+    public float getRating_star() {
         return rating_star;
     }
 
-    public void setRating_star(int rating_star) {
+    public void setRating_star(float rating_star) {
         this.rating_star = rating_star;
     }
 

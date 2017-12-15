@@ -43,9 +43,10 @@ public class TotalReviewActivity extends AppCompatActivity {
         final ListView listView = (ListView)findViewById(R.id.total_review_list);
         final TotalReviewAdapter adapter = new TotalReviewAdapter();
         //데이터 가져오기
-
         Intent intent = getIntent();
         restaurant_name=intent.getStringExtra("restaurant_name");
+
+
         //Toast.makeText(this, restaurant_name, Toast.LENGTH_SHORT).show();
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         mDatabase = firebaseDatabase.getReference("reviews");
