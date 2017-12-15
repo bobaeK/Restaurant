@@ -1,5 +1,6 @@
 package com.famous.restaurant;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,12 +22,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ImageActivity extends FragmentActivity  {
+public class ImageActivity extends AppCompatActivity  {
 
     /**
      * The pager widget, which handles animation and allows swiping horizontally to access previous
@@ -38,15 +43,18 @@ public class ImageActivity extends FragmentActivity  {
      * The pager adapter, which provides the pages to the view pager widget.
      */
     private PagerAdapter mPagerAdapter;
-
+    private List<String> images = new ArrayList<String>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image);
 
+        Intent intent = getIntent();
+        images = intent.getStringArrayListExtra("images");
+
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
-        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager());
+        mPagerAdapter = new CustomPagerAdapter(this);
         mPager.setAdapter(mPagerAdapter);
     }
 
@@ -61,28 +69,41 @@ public class ImageActivity extends FragmentActivity  {
             mPager.setCurrentItem(mPager.getCurrentItem() - 1);
         }
     }
+    class CustomPagerAdapter extends PagerAdapter {
 
-    /**
-     * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in
-     * sequence.
-     */
-    private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
-        List<ImageFragment> images = new ArrayList<ImageFragment>();
-        public ScreenSlidePagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
+        Context mContext;
+        LayoutInflater mLayoutInflater;
 
-        @Override
-        public Fragment getItem(int position) {
-            return new ImageFragment();
+        public CustomPagerAdapter(Context context) {
+            mContext = context;
+            mLayoutInflater = (LayoutInflater) mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         }
 
         @Override
         public int getCount() {
             return images.size();
         }
-        public void addFragment(ImageFragment imageFragment){
-            images.add(imageFragment);
+
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == ((LinearLayout) object);
+        }
+
+        @Override
+        public Object instantiateItem(ViewGroup container, int position) {
+            View itemView = mLayoutInflater.inflate(R.layout.fragment_image, container, false);
+
+            ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
+            //imageView.setImageResource(mResources[position]);
+            Glide.with(ImageActivity.this).load(images.get(position)).into(imageView);
+            container.addView(itemView);
+
+            return itemView;
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((LinearLayout) object);
         }
     }
     /**
