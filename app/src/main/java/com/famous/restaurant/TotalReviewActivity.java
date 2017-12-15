@@ -38,7 +38,7 @@ public class TotalReviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_total_review);
         //전체 후기 목록 보여주기
-        ListView listView = (ListView)findViewById(R.id.total_review_list);
+        final ListView listView = (ListView)findViewById(R.id.total_review_list);
         final TotalReviewAdapter adapter = new TotalReviewAdapter();
         //데이터 가져오기
 
@@ -134,6 +134,10 @@ public class TotalReviewActivity extends AppCompatActivity {
                 adapter.items.clear();
                 if(isChecked){
                     //리얼후기만 보기
+                    //adapter.removeAll();
+                    for(ReviewVO r:list){
+
+                    }
                 }else{
                     //전체후기 보기
                 }
@@ -144,7 +148,7 @@ public class TotalReviewActivity extends AppCompatActivity {
         finish();
     }
     private class TotalReviewAdapter extends BaseAdapter{
-        private ArrayList<TotalReviewItem> items = new ArrayList<TotalReviewItem>();
+        private List<ReviewVO> items = new ArrayList<ReviewVO>();
 
         @Override
         public int getCount() {
@@ -167,16 +171,16 @@ public class TotalReviewActivity extends AppCompatActivity {
 
             if(convertView == null)
                 view = new TotalReviewItemView(getApplicationContext());
-            TotalReviewItem item = items.get(position);
-            view.setId(item.getId());
-            view.setDate(item.getDate());
-            view.setRatingBar(item.getRatingBar());
-            view.setRealReview(item.isRealReview());
-            view.setReview(item.getReview());
-            int num=((TextView)view.findViewById(review)).getLineCount();
+            ReviewVO item = items.get(position);
+            view.setId(item.getUser_id());
+            view.setDate(item.getDate().toString());
+            view.setRatingBar(item.getRating_star());
+            view.setRealReview(item.isAuthentication());
+            view.setReview(item.getReview_text());
+            int num=((TextView)view.findViewById(R.id.review)).getLineCount();
             Log.i("LineNum(BB)",String.valueOf(num));
 
-            TextView textView = (TextView)findViewById(review);
+            TextView textView = (TextView)findViewById(R.id.review);
 
             if (ViewCompat.isLaidOut(view)) {
                 Log.d("TEXTVIEW", "line count : " + textView.getLineCount());
@@ -194,6 +198,10 @@ public class TotalReviewActivity extends AppCompatActivity {
 
             return view;
         }
-        void addItem(TotalReviewItem item){ items.add(item); }
+        void addItem(ReviewVO item){ items.add(item); }
+        void addItems(List<ReviewVO> items){ this.items = items; }
+        void removeAll(){
+            items.clear();
+        }
     }
 }
