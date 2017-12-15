@@ -41,6 +41,7 @@ public class GPSInfo implements LocationListener{
     }
     @Override
     public void onProviderEnabled(String provider) {
+
     }
     @Override
     public void onProviderDisabled(String provider) {

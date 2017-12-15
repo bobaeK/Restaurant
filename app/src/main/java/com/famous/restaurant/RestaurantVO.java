@@ -116,6 +116,20 @@ public class RestaurantVO implements Parcelable {
         this.imageURL = imageURL;
     }
 
+    @Override
+    public String toString() {
+        return "RestaurantVO{" +
+                "name='" + name + '\'' +
+                ", category='" + category + '\'' +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", phone='" + phone + '\'' +
+                ", address='" + address + '\'' +
+                ", businessHours='" + businessHours + '\'' +
+                ", menuList='" + menuList + '\'' +
+                ", imageURL='" + imageURL + '\'' +
+                '}';
+    }
 
     @Override
     public int describeContents() {

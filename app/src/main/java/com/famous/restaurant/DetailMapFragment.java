@@ -32,6 +32,7 @@ public class DetailMapFragment extends Fragment implements OnMapReadyCallback{
     private float longitude;
     private Context context;
     private Check check;
+
     public DetailMapFragment(Check check, Context context) {
         this(check, context,(float)37.50094, (float)126.95025, "지코바 치킨");
     }

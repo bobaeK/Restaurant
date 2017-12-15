@@ -15,47 +15,99 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-
-import com.google.android.gms.maps.MapView;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringTokenizer;
 
 public class DetailActivity extends AppCompatActivity {
     public final static int MY_PERMISSIONS = 1;
-    private DetailMapFragment detailMapFragment = null;
     private ArrayList<String> images = new ArrayList<String>();
-
+    private RestaurantVO restaurantVO;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DetailMapFragment detailMapFragment;
         setContentView(R.layout.activity_detail);
-        /*
-        Intent intent=getIntent();
-        RestaurantVO sRestaurantVO=intent.getParcelableExtra("SELECTED_ITEM");
-        Toast.makeText(getApplicationContext(), sRestaurantVO.getName(), Toast.LENGTH_SHORT).show();
-        */
+        //음식점 정보 받아오기
+        Intent intent = getIntent();
+        restaurantVO = intent.getParcelableExtra("SELECTED_ITEM");
+        Log.i("RESTAURANTVO(BB)", restaurantVO.toString());
 
-        float latitude = (float)37.50094;
-        float longitude = (float)126.95025;
-        String restaurantName = "지코바 치킨";
         //이 조건문 왜 쓰는지 모름,,
         if (savedInstanceState == null) {
-            detailMapFragment = new DetailMapFragment(getApplicationContext(),latitude, longitude, restaurantName);
+            detailMapFragment = new DetailMapFragment(DetailMapFragment.Check.DetailActivity,
+                                                        getApplicationContext(),
+                                                        (float)restaurantVO.getLatitude(),
+                                                        (float)restaurantVO.getLongitude(),
+                                                        restaurantVO.getName());
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.map_fragment, detailMapFragment, "detail_map")
                     .commit();
         }
+        //이미지 동적으로 넣기
+        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.image_layout);
+        StringTokenizer token = new StringTokenizer(restaurantVO.getImageURL(),"$");
+        //LayoutParams 셋팅-왜 LinearLayout의 LayoutParmas?
+        final int width = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics());
+        final int height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics());
+        final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
+        LinearLayout.LayoutParams layoutParams= new LinearLayout.LayoutParams(width, height);
+        layoutParams.rightMargin = margin;
+        while(token.hasMoreTokens()) {
+            String url = token.nextToken();
+            Log.i("image url(BB)", url);
+            images.add(url);
+        }
+        for(String url : images) {
+            ImageView imageView = new ImageView(this);
+            //안드로이드 이미지 크기설정
+            imageView.setLayoutParams(layoutParams);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+            //안드로이드 이미지 이벤트
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(DetailActivity.this, ImageActivity.class);
+                    intent.putStringArrayListExtra("images", images);
+                    startActivity(intent);
+                }
+            });
+            //이미지 넣기
+            Glide.with(this).load(url).into(imageView);
+            linearLayout.addView(imageView);
+        }
 
-        //이미지 ListView
+        //음식점정보
+        TextView phoneText = (TextView)findViewById(R.id.phone_text);
+        TextView locationText = (TextView)findViewById(R.id.location_text);
+        TextView timeText = (TextView)findViewById(R.id.time_text);
+        TextView menuText = (TextView)findViewById(R.id.menu_text);
 
-
+        phoneText.setText(restaurantVO.getPhone());
+        locationText.setText(restaurantVO.getAddress());
+        timeText.setText(restaurantVO.getBusinessHours());
+        StringBuffer buffer = new StringBuffer("메뉴정보\n");
+        token = new StringTokenizer(restaurantVO.getMenuList(),"$");
+        while(token.hasMoreTokens()){
+            buffer.append(token.nextToken()+" ");
+            buffer.append(token.nextToken()+"\n");
+        }
+        menuText.setText(buffer);
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -74,17 +126,9 @@ public class DetailActivity extends AppCompatActivity {
 
     //전화걸기
     public void onPhoneCallClicked(View view) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:010-1000-1000"));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:"+restaurantVO.getPhone()));
         startActivity(intent);
     }
-
-    //사진확대
-    public void onImageClicked(View view) {
-        Intent intent = new Intent(this, ImageActivity.class);
-        intent.putStringArrayListExtra("images", images);
-        startActivity(intent);
-    }
-
     //전체후기보기
     public void onTotalReviewClicked(View view) {
         Intent intent = new Intent(this, TotalReviewActivity.class);
@@ -142,36 +186,5 @@ public class DetailActivity extends AppCompatActivity {
     //뒤로가기
     public void onBackButtonClicked(View view){
         finish();
-    }
-    //상세보기화면 이미지 리스트뷰 어답터
-    private class DetailImagedapter extends BaseAdapter {
-        private ArrayList<DetailImageItem> items = new ArrayList<DetailImageItem>();
-
-        @Override
-        public int getCount() {
-            return items.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return items.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            DetailPictureItemView view = (DetailPictureItemView) convertView;
-
-            if(convertView == null)
-                view = new DetailPictureItemView(getApplicationContext());
-            DetailImageItem item = items.get(position);
-            view.setImage(item.getImage());
-            return view;
-        }
-        void addItem(DetailImageItem item){ items.add(item); }
     }
 }

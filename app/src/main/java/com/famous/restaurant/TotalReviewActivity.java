@@ -42,7 +42,6 @@ public class TotalReviewActivity extends AppCompatActivity {
                                                                                             "매우 맛있어서 도 가고싶다 " +
                                                                                             "매우 맛있어서 도 가고싶다 " +
                                                                                             "매우 맛있어서 도 가고싶다", new ArrayList<String>()));
-
         listView.setAdapter(adapter);
 
         //리얼후기 보기 스위치

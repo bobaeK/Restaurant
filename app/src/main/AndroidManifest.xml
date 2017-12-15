@@ -27,9 +27,6 @@
 
         <!-- 형진 activity -->
         <activity android:name=".MainActivity" />
-        <activity android:name=".DetailActivity" />
-        <activity android:name=".MypageActivity" />
-        <!-- 보배 activity -->
         <activity android:name=".LoadingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,6 +34,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MypageActivity" />
+        <!-- 보배 activity -->
+        <activity android:name=".DetailActivity"/>
         <activity android:name=".TotalReviewActivity" />
         <activity android:name=".MapActivity"/>
         <activity

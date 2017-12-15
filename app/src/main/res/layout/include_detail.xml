@@ -86,13 +86,13 @@
             android:textSize="8pt"
             android:textStyle="bold"
             android:layout_gravity="fill_vertical"
-            android:gravity="center"/>
+            android:gravity="left"/>
         <!--음식점 사진-->
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_collections_24dp"
-            android:padding="10dp"/>
+            android:paddingLeft="10dp"/>
         <TextView
             android:id="@+id/picture_text"
             android:layout_width="wrap_content"
@@ -104,10 +104,18 @@
             android:textStyle="bold" />
     </GridLayout>
     <!--사진 스크롤-->
-    <ListView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    </ListView>
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/image_layout">
+        </LinearLayout>
+    </HorizontalScrollView>
     <!--후기-->
     <TableLayout
         android:layout_width="match_parent"
