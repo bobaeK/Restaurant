@@ -25,10 +25,6 @@
         android:layout_height="wrap_content"
         app:srcCompat="@drawable/mr_dialog_close_dark"
         android:onClick="onBackButtonClicked"/>
-<!--    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/image"/>-->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
