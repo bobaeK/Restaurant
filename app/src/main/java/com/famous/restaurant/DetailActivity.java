@@ -24,7 +24,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.StringTokenizer;
 
 public class DetailActivity extends AppCompatActivity {
@@ -131,7 +130,7 @@ public class DetailActivity extends AppCompatActivity {
     public void onTotalReviewClicked(View view) {
         Intent intent = new Intent(this, TotalReviewActivity.class);
         //전체후기 볼 음식점 아이디 전달
-        intent.putExtra("restaurant_name", 1);
+        intent.putExtra("restaurant_name", restaurantVO.getName());
         startActivity(intent);
     }
 
@@ -179,7 +178,9 @@ public class DetailActivity extends AppCompatActivity {
     }
     //후기등록
     public void onAddReviewClicked(View view){
-
+        Intent intent = new Intent();
+        intent.putExtra("restaurant_name", restaurantVO.getName());
+        startActivity(intent);
     }
     //뒤로가기
     public void onBackButtonClicked(View view){

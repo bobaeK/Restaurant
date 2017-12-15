@@ -2,32 +2,16 @@ package com.famous.restaurant;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
-
 import com.bumptech.glide.Glide;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,7 +71,6 @@ public class ImageActivity extends AppCompatActivity  {
             View itemView = mLayoutInflater.inflate(R.layout.fragment_image, container, false);
 
             ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
-            //imageView.setImageResource(mResources[position]);
             Glide.with(ImageActivity.this).load(images.get(position)).into(imageView);
             container.addView(itemView);
 
@@ -99,10 +82,6 @@ public class ImageActivity extends AppCompatActivity  {
             container.removeView((View) object);
         }
     }
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public void onBackButtonClicked(View view){
-        finish();
-    }
+    //뒤로가기
+    public void onBackButtonClicked(View view){ finish(); }
 }
