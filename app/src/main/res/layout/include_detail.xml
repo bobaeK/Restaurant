@@ -185,6 +185,6 @@
     <!--후기 3개-->
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="300dp"
         android:id="@+id/total_review_list"/>
 </LinearLayout>
