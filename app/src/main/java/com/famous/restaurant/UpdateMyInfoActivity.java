@@ -53,7 +53,6 @@ public class UpdateMyInfoActivity extends AppCompatActivity {
                     if(!pwd.equals(pwd2)){
                         Toast.makeText(getApplicationContext(),"비밀번호가 일치하지 않습니다.",Toast.LENGTH_SHORT).show();
                         update_pwd2.setText("");
-                        update_pwd2.requestFocus();
                     }
                 }
             }
@@ -83,6 +82,8 @@ public class UpdateMyInfoActivity extends AppCompatActivity {
                 member = dataSnapshot.getValue(MemVO.class);
                 update_name.setText(member.getName());
                 update_id.setText(member.getId());
+                update_id.setClickable(false);
+                update_id.setFocusable(false);
                 update_email.setText(member.getEmail());
                 update_phone.setText(member.getPhone());
             }
