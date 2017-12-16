@@ -23,7 +23,7 @@
         <!--google map key-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCsfo3JXWdBkWDkMh64mjPZpJWkPYLPyBU" />
+            android:value="AIzaSyB2Nk9wwkO07YhWu-t23a7MMaLd8csgCoo" />
 
         <!-- 형진 activity -->
         <activity android:name=".MainActivity" />
