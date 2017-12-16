@@ -286,14 +286,39 @@ public class DetailActivity extends AppCompatActivity {
         double gapLongitude = Math.abs(location.getLongitude() - restaurantVO.getLongitude());
         Log.d("gapLatitude", Double.toString(gapLatitude));
         Log.d("gapLongitude", Double.toString(gapLongitude));
-        if (gapLatitude < 0.01 && gapLongitude < 0.01) {
+        if (gapLatitude < 0.0001 && gapLongitude < 0.005) {
+
+            authDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Calendar now = Calendar.getInstance();
+                    String nowDate = now.get(Calendar.YEAR) + "/" +
+                            (now.get(Calendar.MONTH) + 1) + "/" + now.get(Calendar.DATE);
+
+                    AuthenticationVO auth = new AuthenticationVO();
+                    auth.setMem_id(SaveSharedPreference.getUserName(DetailActivity.this));
+                    auth.setRestaurant(restaurantVO.getName());
+                    auth.setReview_id("none");
+                    auth.setDate(nowDate);
+
+                    authDatabase.child(authDatabase.push().getKey()).setValue(auth);
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
             builder.setTitle("인증 완료");
             builder.setMessage(restaurantVO.getName() + "이(가) 가본 음식점으로 인증되었습니다!" +
                     " 후기를 작성하시겠습니까");
             builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Toast.makeText(getApplicationContext(), "확인", Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getApplicationContext(), ReviewAddActivity.class);
+                    intent.putExtra("restaurant_name", restaurantVO.getName());
+                    startActivity(intent);
                 }
             });
             builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -306,29 +331,8 @@ public class DetailActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
 
-                                    authDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            Calendar now = Calendar.getInstance();
-                                            String nowDate = now.get(Calendar.YEAR) + "/" +
-                                                    (now.get(Calendar.MONTH) + 1) + "/" + now.get(Calendar.DATE);
-
-                                            AuthenticationVO auth = new AuthenticationVO();
-                                            auth.setMem_id(SaveSharedPreference.getUserName(DetailActivity.this));
-                                            auth.setRestaurant(restaurantVO.getName());
-                                            auth.setReview_id("none");
-                                            auth.setDate(nowDate);
-
-                                            authDatabase.child(authDatabase.push().getKey()).setValue(auth);
-                                        }
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-
-                                        }
-                                    });
                                 }
-                            });
+                            }).show();
                 }
             });
         } else {
