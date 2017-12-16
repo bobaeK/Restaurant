@@ -8,6 +8,7 @@
     android:orientation="vertical">
     <!--음식점 이름-->
     <TextView
+        android:id="@+id/name_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="기본음식점"
@@ -142,28 +143,48 @@
                 android:onClick="onTotalReviewClicked"/>
         </TableRow>
     </TableLayout>
-    <View
+    <!--<LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#ffaaaaaa"/>
-    <include
+        android:layout_height="wrap_content">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ffaaaaaa"/>
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/total_review_item"/>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ffaaaaaa"/>
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/total_review_item"/>
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#ffaaaaaa"/>
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            layout="@layout/total_review_item"/>
+    </LinearLayout>-->
+    <!--후기 3개-->
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        layout="@layout/total_review_item"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#ffaaaaaa"/>
-    <include
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/total_review_item"/>
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#ffaaaaaa"/>
-    <include
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        layout="@layout/total_review_item"/>
+        android:id="@+id/total_review_list"/>
 </LinearLayout>

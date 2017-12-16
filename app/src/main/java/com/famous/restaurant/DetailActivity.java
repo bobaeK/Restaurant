@@ -18,6 +18,7 @@ import android.util.TypedValue;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,11 +27,13 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class DetailActivity extends AppCompatActivity {
@@ -39,14 +42,21 @@ public class DetailActivity extends AppCompatActivity {
     private RestaurantVO restaurantVO;
     DatabaseReference authDatabase;
     DatabaseReference mDatabase;
+    DatabaseReference reviewDatabase;
 
     //음식점정보
+    TextView nameText;
     TextView phoneText;
     TextView locationText;
     TextView timeText;
     TextView menuText;
-
+    //지도
     DetailMapFragment detailMapFragment;
+    //후기 3개
+    ListView listView;
+    TotalReviewAdapter adapter;
+    Query reviewQuary;
+    List<ReviewVO> reviewList = new ArrayList<ReviewVO>();
 
     String name;
     @Override
@@ -54,24 +64,31 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //DetailMapFragment detailMapFragment;
         setContentView(R.layout.activity_detail);
+
         //음식점 정보 받아오기
+        Intent intent = DetailActivity.this.getIntent();
+        name = intent.getStringExtra("SELECTED_ITEM");
         /*Intent intent = getIntent();
         final String name = intent.getParcelableExtra("SELECTED_ITEM");*/
 
         authDatabase = FirebaseDatabase.getInstance().getReference("authentication");
         mDatabase = FirebaseDatabase.getInstance().getReference("restaurants");
+        reviewDatabase = FirebaseDatabase.getInstance().getReference("reviews");
+        reviewQuary = reviewDatabase.orderByChild("restaurant").equalTo(name).limitToFirst(3);
 
+        nameText = (TextView)findViewById(R.id.name_text);
         phoneText = (TextView)findViewById(R.id.phone_text);
         locationText = (TextView)findViewById(R.id.location_text);
         timeText = (TextView)findViewById(R.id.time_text);
         menuText = (TextView)findViewById(R.id.menu_text);
 
+        listView = (ListView)findViewById(R.id.total_review_list);
+        adapter = new TotalReviewAdapter(getApplicationContext());
+
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
-                Intent intent = DetailActivity.this.getIntent();
-                name = intent.getStringExtra("SELECTED_ITEM");
                 Log.i("SELECTED_ITME", name);
                 while(child.hasNext()){
                     DataSnapshot detailData = child.next();
@@ -125,6 +142,7 @@ public class DetailActivity extends AppCompatActivity {
                             Glide.with(DetailActivity.this).load(url).into(imageView);
                             linearLayout.addView(imageView);
                         }
+                        nameText.setText(restaurantVO.getName());
                         phoneText.setText(restaurantVO.getPhone());
                         locationText.setText(restaurantVO.getAddress());
                         timeText.setText(restaurantVO.getBusinessHours());
@@ -143,6 +161,55 @@ public class DetailActivity extends AppCompatActivity {
 
             }
         });
+        //후기 3개
+        reviewQuary.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
+                Log.i("SELECTED_ITME", name);
+                while(child.hasNext()){
+                    DataSnapshot reviewData = child.next();
+                    ReviewVO review = reviewData.getValue(ReviewVO.class);
+                    Log.i("review data",review.toString());
+                    review.setKey(reviewData.getKey());
+                    reviewList.add(review);
+                }
+                DatabaseReference dataR1;
+                for(final ReviewVO review:reviewList){
+                    if(review.getImageCnt() > 0){
+                        dataR1 = reviewDatabase.child(review.getKey()).child("imageUrl");
+                        dataR1.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                Iterator<DataSnapshot> list_it = dataSnapshot.getChildren().iterator();
+                                ArrayList<String> image_url_list = new ArrayList<String>();
+                                while (list_it.hasNext()) {
+                                    DataSnapshot dss = list_it.next();
+                                    image_url_list.add(dss.getValue(String.class));
+//                                    Toast.makeText(getApplicationContext(),dss.getKey(),Toast.LENGTH_SHORT).show();
+                                }
+                                review.setImageUri(image_url_list);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                }
+            listView.setAdapter(adapter);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        adapter.addItems(reviewList);
+        listView.setAdapter(adapter);
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -270,7 +337,6 @@ public class DetailActivity extends AppCompatActivity {
             builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-
                 }
             });
         }
