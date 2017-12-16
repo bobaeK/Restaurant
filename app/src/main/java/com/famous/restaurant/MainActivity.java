@@ -389,7 +389,8 @@ public class MainActivity extends AppCompatActivity {
 
             for(AuthenticationVO auth : authenticationList) {
                 if(rVO.getName().equals(auth.getRestaurant())) {
-                    authCnt++;
+                    if(!auth.getReview_id().equals("none"))
+                        authCnt++;
                 }
             }
             if(rCnt!=0)

@@ -286,7 +286,7 @@ public class DetailActivity extends AppCompatActivity {
         double gapLongitude = Math.abs(location.getLongitude() - restaurantVO.getLongitude());
         Log.d("gapLatitude", Double.toString(gapLatitude));
         Log.d("gapLongitude", Double.toString(gapLongitude));
-        if (gapLatitude < 0.0005 && gapLongitude < 0.005) {
+        if (gapLatitude < 0.0005 && gapLongitude < 0.001) {
             builder.setTitle("인증 완료");
             builder.setMessage(restaurantVO.getName() + "이(가) 가본 음식점으로 인증되었습니다!" +
                     " 후기를 작성하시겠습니까");
