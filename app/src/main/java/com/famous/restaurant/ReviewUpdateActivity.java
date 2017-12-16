@@ -114,7 +114,7 @@ public class ReviewUpdateActivity extends AppCompatActivity {
         btn_delete_review = (Button) findViewById(R.id.btn_delete_review);
         btn_delete_review.setOnClickListener(new delete_review_onClickListener());
 
-        review_key="-L00TkcpiKscqFiWfLxj"; // 임시
+        review_key=getIntent().getStringExtra("SELECTED_ITEM");
 
         /* 데이터 setting */
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
