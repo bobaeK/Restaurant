@@ -243,7 +243,7 @@ public class DetailActivity extends AppCompatActivity {
     public void onAddPlaceClicked(View view) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)||ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)&&ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 new AlertDialog.Builder(this).setTitle("Request Permission Rationale")
                                             .setMessage("인증을 위해서는 gps 허용을 설정해야 합니다.")
                                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -257,95 +257,96 @@ public class DetailActivity extends AppCompatActivity {
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS);
             }
-            //return;
+        }else {
+            // Update location to get.
+            GPSInfo gpsInfo = GPSInfo.getInstance(this);
+
+            LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 10000, gpsInfo);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1, 100000, gpsInfo);
+
+            boolean isGPSEnabled = locationManager.isProviderEnabled("gps");
+            boolean isNetworkEnabled = locationManager.isProviderEnabled("network");
+
+            Location location = null;
+            if (isGPSEnabled)
+                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            else if (isNetworkEnabled)
+                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+            else {
+                Toast.makeText(getApplicationContext(), "위치정보를 가져올 수 없습니다. 네트워크상태를 확인해 주세요!", Toast.LENGTH_SHORT);
+                return;
+            }
+            Log.i("MyGPSInfo", "gps_enable : " + isGPSEnabled + " network_enable : " + isNetworkEnabled);
+            Log.i("MyGPSInfo", "longitude : " + location.getLongitude() + " latitude : " + location.getLatitude());
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(DetailActivity.this);
+            double gapLatitude = Math.abs(location.getLatitude() - restaurantVO.getLatitude());
+            double gapLongitude = Math.abs(location.getLongitude() - restaurantVO.getLongitude());
+            Log.d("gapLatitude", Double.toString(gapLatitude));
+            Log.d("gapLongitude", Double.toString(gapLongitude));
+            if (gapLatitude < 0.0001 && gapLongitude < 0.005) {
+
+                authDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        Calendar now = Calendar.getInstance();
+                        String nowDate = now.get(Calendar.YEAR) + "/" +
+                                (now.get(Calendar.MONTH) + 1) + "/" + now.get(Calendar.DATE);
+
+                        AuthenticationVO auth = new AuthenticationVO();
+                        auth.setMem_id(SaveSharedPreference.getUserName(DetailActivity.this));
+                        auth.setRestaurant(restaurantVO.getName());
+                        auth.setReview_id("none");
+                        auth.setDate(nowDate);
+
+                        authDatabase.child(authDatabase.push().getKey()).setValue(auth);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+                builder.setTitle("인증 완료");
+                builder.setMessage(restaurantVO.getName() + "이(가) 가본 음식점으로 인증되었습니다!" +
+                        " 후기를 작성하시겠습니까");
+                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(getApplicationContext(), ReviewAddActivity.class);
+                        intent.putExtra("restaurant_name", restaurantVO.getName());
+                        startActivity(intent);
+                    }
+                });
+                builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        new AlertDialog.Builder(DetailActivity.this)
+                                .setTitle("인증완료")
+                                .setMessage("본인이 인증한 목록을 보고 싶다면 '마이페이지>인증목록'에서 확인하실 수 있습니다.")
+                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+
+                                    }
+                                }).show();
+                    }
+                });
+            } else {
+                builder.setTitle("인증 실패");
+                builder.setMessage(restaurantVO.getName() + " 의 위치와 현재 위치가 일치하지 않습니다!");
+                builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+            }
+
+            builder.show();
         }
-        // Update location to get.
-        GPSInfo gpsInfo = GPSInfo.getInstance(this);
-
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1, 10000, gpsInfo);
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1, 100000, gpsInfo);
-
-        boolean isGPSEnabled = locationManager.isProviderEnabled("gps");
-        boolean isNetworkEnabled = locationManager.isProviderEnabled("network");
-
-        Location location = null;
-        if(isGPSEnabled)
-            location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        else if(isNetworkEnabled)
-            location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-        else{
-            Toast.makeText(getApplicationContext(), "위치정보를 가져올 수 없습니다. 네트워크상태를 확인해 주세요!", Toast.LENGTH_SHORT);
-            return;
-        }
-        Log.i("MyGPSInfo", "gps_enable : "+isGPSEnabled+" network_enable : "+isNetworkEnabled);
-        Log.i("MyGPSInfo", "longitude : " + location.getLongitude() + " latitude : " + location.getLatitude());
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(DetailActivity.this);
-        double gapLatitude = Math.abs(location.getLatitude() - restaurantVO.getLatitude());
-        double gapLongitude = Math.abs(location.getLongitude() - restaurantVO.getLongitude());
-        Log.d("gapLatitude", Double.toString(gapLatitude));
-        Log.d("gapLongitude", Double.toString(gapLongitude));
-        if (gapLatitude < 0.0001 && gapLongitude < 0.005) {
-
-            authDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
-
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    Calendar now = Calendar.getInstance();
-                    String nowDate = now.get(Calendar.YEAR) + "/" +
-                            (now.get(Calendar.MONTH) + 1) + "/" + now.get(Calendar.DATE);
-
-                    AuthenticationVO auth = new AuthenticationVO();
-                    auth.setMem_id(SaveSharedPreference.getUserName(DetailActivity.this));
-                    auth.setRestaurant(restaurantVO.getName());
-                    auth.setReview_id("none");
-                    auth.setDate(nowDate);
-
-                    authDatabase.child(authDatabase.push().getKey()).setValue(auth);
-                }
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
-            builder.setTitle("인증 완료");
-            builder.setMessage(restaurantVO.getName() + "이(가) 가본 음식점으로 인증되었습니다!" +
-                    " 후기를 작성하시겠습니까");
-            builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Intent intent = new Intent(getApplicationContext(), ReviewAddActivity.class);
-                    intent.putExtra("restaurant_name", restaurantVO.getName());
-                    startActivity(intent);
-                }
-            });
-            builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    new AlertDialog.Builder(DetailActivity.this)
-                            .setTitle("인증완료")
-                            .setMessage("본인이 인증한 목록을 보고 싶다면 '마이페이지>인증목록'에서 확인하실 수 있습니다.")
-                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            }).show();
-                }
-            });
-        } else {
-            builder.setTitle("인증 실패");
-            builder.setMessage(restaurantVO.getName() + " 의 위치와 현재 위치가 일치하지 않습니다!");
-            builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            });
-        }
-
-        builder.show();
     }
     //후기등록
     public void onAddReviewClicked(View view){
