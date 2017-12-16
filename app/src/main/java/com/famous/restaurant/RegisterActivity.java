@@ -21,6 +21,7 @@ public class RegisterActivity extends AppCompatActivity {
     EditText reg_name;
     EditText reg_id;
     EditText reg_pwd;
+    EditText reg_pwd2;
     EditText reg_email;
     EditText reg_phone;
     Button reg_button;
@@ -35,20 +36,40 @@ public class RegisterActivity extends AppCompatActivity {
         reg_name = (EditText)findViewById(R.id.reg_name);
         reg_id = (EditText)findViewById(R.id.reg_id);
         reg_pwd = (EditText)findViewById(R.id.reg_pwd);
+        reg_pwd2 = (EditText)findViewById(R.id.reg_pwd2);
         reg_email =(EditText)findViewById(R.id.reg_email);
         reg_phone = (EditText)findViewById(R.id.reg_phone);
 
         reg_button = (Button)findViewById(R.id.reg_button);
-
         reg_button.setOnClickListener(new registerClickListener());
 
+        reg_pwd2.setOnFocusChangeListener( new View.OnFocusChangeListener(){
+
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus == false){
+                    String pwd = reg_pwd.getText().toString();
+                    String pwd2 = reg_pwd2.getText().toString();
+                    if(!pwd.equals(pwd2)){
+                        Toast.makeText(getApplicationContext(),"비밀번호가 일치하지 않습니다.",Toast.LENGTH_SHORT).show();
+                        reg_pwd2.setText("");
+                        reg_pwd2.requestFocus();
+                    }
+                }
+            }
+        });
     }
 
     private class registerClickListener implements View.OnClickListener{
 
         @Override
         public void onClick(View v) {
-
+            String pwd = reg_pwd.getText().toString();
+            String pwd2 = reg_pwd2.getText().toString();
+            if( !pwd.equals("") && pwd.equals(pwd2)){
+                Toast.makeText(getApplicationContext(),"비밀번호를 확인해주세요",Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
 

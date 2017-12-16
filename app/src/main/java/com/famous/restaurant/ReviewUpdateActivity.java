@@ -114,7 +114,7 @@ public class ReviewUpdateActivity extends AppCompatActivity {
         btn_delete_review = (Button) findViewById(R.id.btn_delete_review);
         btn_delete_review.setOnClickListener(new delete_review_onClickListener());
 
-        review_key="-L00TkcpiKscqFiWfLxj";
+        review_key="-L00TkcpiKscqFiWfLxj"; // 임시
 
         /* 데이터 setting */
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -299,11 +299,18 @@ public class ReviewUpdateActivity extends AppCompatActivity {
             // Showing progressDialog.
             progressDialog.show();
 
+            /* 입력 필수 체크 */
+            String review_text = reviewText.getText().toString();
+            if(review_text.length()<=0 || insertVO.getRating_star()==0){
+                Toast.makeText(getApplicationContext(),"필수 항목을 입력해주세요.",Toast.LENGTH_SHORT);
+                return;
+            }
+
 
             int tot = new_imageCnt+FB_imageCnt;
             insertVO.setImageCnt(tot);
             insertVO.setReview_text(reviewText.getText().toString());
-            insertVO.setRating_star(ratingBar.getNumStars());
+            //insertVO.setRating_star(ratingBar.getNumStars());
 
             // 데이터 저장
             mDatabase.child(review_key).setValue(insertVO);

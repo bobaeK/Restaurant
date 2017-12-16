@@ -21,13 +21,18 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Iterator;
 
 
 public class ReviewAddActivity extends AppCompatActivity {
@@ -51,11 +56,18 @@ public class ReviewAddActivity extends AppCompatActivity {
     int Image_Request_Code = 7;
 
     ReviewVO insertVO;
+    String user_id;
+    String restaurant_name;
+
+    String auth_key;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_review_add);
+
+        user_id = SaveSharedPreference.getUserName(getApplicationContext());
+        restaurant_name = getIntent().getStringExtra("restaurant_name");
 
         insertVO = new ReviewVO();
 
@@ -99,6 +111,34 @@ public class ReviewAddActivity extends AppCompatActivity {
         /* 저장하기 */
         btn_save_review = (Button)findViewById(R.id.btn_save_review);
         btn_save_review.setOnClickListener(new save_review_onClickListener());
+
+        // 리얼후기 인증 여부 확인 - 미리확인
+        DatabaseReference authDatabase=FirebaseDatabase.getInstance().getReference("authentication");
+        authDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
+                while (child.hasNext()) {
+                    DataSnapshot authData = child.next();
+                    AuthenticationVO authVO = authData.getValue(AuthenticationVO.class);
+                    // 키값 가져오는 것 수정
+                    // 회원 아이디랑 음식점 확인 후 , 리뷰 아이디 없을 때!
+
+                    if (authVO.getRestaurant().equals(restaurant_name) && authVO.getMem_id().equals(user_id) && authVO.getReview_id().equals("none") ){
+                        auth_key = authData.getKey();
+                        insertVO.setAuthentication(true); // 리얼후기임.
+                        Toast.makeText(getApplicationContext()," 확인 ",Toast.LENGTH_SHORT).show();
+                    }
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
     }
 
@@ -218,26 +258,41 @@ public class ReviewAddActivity extends AppCompatActivity {
         public void onClick(View v) {
 
             /* 입력 필수 체크 */
+            String review_text = reviewText.getText().toString();
+            if(review_text.length()<=0 || insertVO.getRating_star()==0){
+                Toast.makeText(getApplicationContext(),"필수 항목을 입력해주세요.",Toast.LENGTH_SHORT);
+                return;
+            }
+
+            Calendar now = Calendar.getInstance();
+            String nowDate = now.get(Calendar.YEAR) + "/" +
+                    (now.get(Calendar.MONTH) + 1) + "/" + now.get(Calendar.DATE);
 
             // 객체에 저장.
-
-            insertVO.setUser_id("wang");  // 임시
-            insertVO.setRestaurant("temp"); // 임시
+            insertVO.setUser_id(user_id);
+            insertVO.setRestaurant(restaurant_name);
+            insertVO.setDate(nowDate);
             insertVO.setImageCnt(imageCnt);
-            insertVO.setReview_text(reviewText.getText().toString());
-            insertVO.setRating_star(ratingBar.getNumStars());
+            insertVO.setReview_text(review_text);
+            //insertVO.setRating_star(ratingBar.getNumStars());
 
             String key = UploadToFirebase(insertVO);
+
+            // authentication에 review ID 추가하기.
+            if(!auth_key.equals("")){
+                UpdateAuthDB(key);
+            }
 
             if(imageCnt>0){
                 // storage 에 저장
                 UploadImageFileToStorage(key);
-
-                }
+            } else{
+                movePage();
+            }
             }
         }
 
-        private boolean UploadImageFileToStorage(final String key) {
+        private void UploadImageFileToStorage(final String key) {
 
             for (int i = 0; i < imageCnt; i++) {
                 StorageReference storageReference2nd = storageReference.child("review_images/" + System.currentTimeMillis() + "." + GetFileExtension(filePathUri[i]));
@@ -262,7 +317,7 @@ public class ReviewAddActivity extends AppCompatActivity {
                         });
 
             }
-            return true;
+            movePage();
         }
 
         private String UploadToFirebase(ReviewVO insertVO){
@@ -274,6 +329,15 @@ public class ReviewAddActivity extends AppCompatActivity {
 
 
             return key;
+        }
+
+        private void UpdateAuthDB(String key){
+            DatabaseReference authDB = FirebaseDatabase.getInstance().getReference("authentication");
+            authDB.child(key).child("review_id").setValue(key);
+        }
+
+        private void movePage(){
+
         }
 
 }
