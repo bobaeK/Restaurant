@@ -345,7 +345,7 @@ public class DetailActivity extends AppCompatActivity {
     }
     //후기등록
     public void onAddReviewClicked(View view){
-        Intent intent = new Intent();
+        Intent intent = new Intent(this,ReviewAddActivity.class);
         intent.putExtra("restaurant_name", restaurantVO.getName());
         startActivity(intent);
     }
