@@ -45,6 +45,7 @@ public class MypageActivity extends AppCompatActivity {
     List<String> certifiedStoreList=new ArrayList<>();
     List<RegisteredReviewItem> registeredReviewList=new ArrayList<>();
     List<ReviewVO> reviewList=new ArrayList<>();
+    List<String> keyList=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,7 +103,7 @@ public class MypageActivity extends AppCompatActivity {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     ReviewVO reviewVO = postSnapshot.getValue(ReviewVO.class);
                     reviewList.add(reviewVO);
-                    RegisteredReviewItem registeredReviewItem= new RegisteredReviewItem(reviewVO.getRestaurant()+"_"+reviewVO.getDate()+"_"+ reviewVO.getReview_text());
+                    RegisteredReviewItem registeredReviewItem= new RegisteredReviewItem(reviewVO.getRestaurant()+"_"+reviewVO.getDate()+"_"+ reviewVO.getReview_text(), postSnapshot.getKey());
                     registeredReviewList.add(registeredReviewItem);
                 }
                 for(RegisteredReviewItem rItem : registeredReviewList) {
@@ -177,15 +178,7 @@ public class MypageActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 RegisteredReviewItem item=(RegisteredReviewItem)ReviewAdapter.getItem(position);
                 Intent intent=new Intent(getApplicationContext(), ReviewUpdateActivity.class);
-                String sItem=item.getRegisteredReview();
-                StringTokenizer restaurantName=new StringTokenizer(sItem, "_");
-                String storeName=restaurantName.nextToken();
-                String selectedReview=null;
-                for(ReviewVO review : reviewList) {
-                    if(review.getRestaurant().equals(storeName))
-                        selectedReview=review.getUser_id();
-                }
-                intent.putExtra("SELECTED_ITEM", selectedReview);
+                intent.putExtra("SELECTED_ITEM", item.getReviewKey());
                 startActivity(intent);
             }
         });

@@ -6,9 +6,19 @@ package com.famous.restaurant;
 
 public class RegisteredReviewItem {
     private String registeredReview;
+    private String reviewKey;
 
-    public RegisteredReviewItem(String registeredReview) {
+    public RegisteredReviewItem(String registeredReview, String reviewKey) {
         this.registeredReview = registeredReview;
+        this.reviewKey = reviewKey;
+    }
+
+    public String getReviewKey() {
+        return reviewKey;
+    }
+
+    public void setReviewKey(String reviewKey) {
+        this.reviewKey = reviewKey;
     }
 
     public String getRegisteredReview() {
