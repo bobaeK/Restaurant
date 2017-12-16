@@ -114,7 +114,7 @@ public class ReviewAddActivity extends AppCompatActivity {
 
         // 리얼후기 인증 여부 확인 - 미리확인
         DatabaseReference authDatabase=FirebaseDatabase.getInstance().getReference("authentication");
-        authDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+        authDatabase.orderByChild("restaurant").equalTo(restaurant_name).addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -124,11 +124,11 @@ public class ReviewAddActivity extends AppCompatActivity {
                     AuthenticationVO authVO = authData.getValue(AuthenticationVO.class);
                     // 키값 가져오는 것 수정
                     // 회원 아이디랑 음식점 확인 후 , 리뷰 아이디 없을 때!
+                    if (authVO.getMem_id().equals(user_id) && authVO.getReview_id().equals("none")){
+                            auth_key = authData.getKey();
+                            insertVO.setAuthentication(true); // 리얼후기임.
+                            break;
 
-                    if (authVO.getRestaurant().equals(restaurant_name) && authVO.getMem_id().equals(user_id) && authVO.getReview_id().equals("none") ){
-                        auth_key = authData.getKey();
-                        insertVO.setAuthentication(true); // 리얼후기임.
-                        Toast.makeText(getApplicationContext()," 확인 ",Toast.LENGTH_SHORT).show();
                     }
                 }
 
