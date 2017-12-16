@@ -333,7 +333,7 @@ public class ReviewAddActivity extends AppCompatActivity {
 
         private void UpdateAuthDB(String key){
             DatabaseReference authDB = FirebaseDatabase.getInstance().getReference("authentication");
-            authDB.child(key).child("review_id").setValue(key);
+            authDB.child(auth_key).child("review_id").setValue(key);
         }
 
         private void movePage(){

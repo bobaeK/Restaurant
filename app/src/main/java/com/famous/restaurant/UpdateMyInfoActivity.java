@@ -13,6 +13,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.Iterator;
+
 public class UpdateMyInfoActivity extends AppCompatActivity {
 
     DatabaseReference mDatabase;
@@ -75,17 +77,30 @@ public class UpdateMyInfoActivity extends AppCompatActivity {
     }
 
     private void findUserInfo(){
+
         mDatabase.orderByKey().equalTo(user_id).addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                member = dataSnapshot.getValue(MemVO.class);
-                update_name.setText(member.getName());
-                update_id.setText(member.getId());
-                update_id.setClickable(false);
-                update_id.setFocusable(false);
-                update_email.setText(member.getEmail());
-                update_phone.setText(member.getPhone());
+                Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
+                while(child.hasNext())
+                {
+                    DataSnapshot memSnapshot = child.next();
+                    if(memSnapshot.getKey().equals(user_id)){
+                        member = memSnapshot.getValue(MemVO.class);
+
+                        update_name.setText(member.getName());
+                        update_id.setText(member.getId());
+                        update_id.setClickable(false);
+                        update_id.setFocusable(false);
+                        update_email.setText(member.getEmail());
+                        update_phone.setText(member.getPhone());
+
+                        break;
+                    }
+                }
+
+
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
@@ -99,7 +114,7 @@ public class UpdateMyInfoActivity extends AppCompatActivity {
         public void onClick(View v) {
             String pwd = update_pwd.getText().toString();
             String pwd2 = update_pwd2.getText().toString();
-            if( !pwd.equals("") && pwd.equals(pwd2)){
+            if(pwd.equals("") && !pwd.equals(pwd2)){
                 Toast.makeText(getApplicationContext(),"비밀번호를 확인해주세요",Toast.LENGTH_SHORT).show();
                 return;
             }
