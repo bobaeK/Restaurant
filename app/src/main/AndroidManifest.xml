@@ -14,14 +14,13 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
-        android:name="android.support.multidex.MultiDexApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-
-        <!-- google map key -->
+        android:theme="@style/AppTheme"
+        android:name="android.support.multidex.MultiDexApplication">
+        <!--google map key-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB2Nk9wwkO07YhWu-t23a7MMaLd8csgCoo" />
@@ -37,13 +36,13 @@
         </activity>
         <activity android:name=".MypageActivity" />
         <!-- 보배 activity -->
-        <activity android:name=".DetailActivity" />
+        <activity android:name=".DetailActivity"/>
         <activity android:name=".TotalReviewActivity" />
-        <activity android:name=".MapActivity" />
+        <activity android:name=".MapActivity"/>
         <activity
             android:name=".ImageActivity"
             android:label="@string/title_activity_image"
-            android:theme="@style/AppTheme" />
+            android:theme="@style/AppTheme"></activity>
         <!-- 인영 activity -->
         <activity android:name=".LoginActivity" />
         <activity
@@ -55,11 +54,10 @@
         <activity
             android:name=".FindPwdActivity"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
-        <activity android:name=".ChangePwdActivity" />
-        <activity android:name=".ReviewAddActivity" />
-        <activity android:name=".ReviewUpdateActivity" />
-        <activity android:name=".UpdateMyInfoActivity"
-            android:theme="@style/Theme.AppCompat.Light.Dialog" />
+        <activity android:name=".ChangePwdActivity"/>
+        <activity android:name=".ReviewAddActivity"/>
+        <activity android:name=".ReviewUpdateActivity"/>
+        <activity android:name=".UpdateMyInfoActivity"/>
     </application>
 
 </manifest>
