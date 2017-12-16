@@ -30,6 +30,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 public class DetailActivity extends AppCompatActivity {
@@ -37,82 +38,111 @@ public class DetailActivity extends AppCompatActivity {
     private ArrayList<String> images = new ArrayList<String>();
     private RestaurantVO restaurantVO;
     DatabaseReference authDatabase;
+    DatabaseReference mDatabase;
+
+    //음식점정보
+    TextView phoneText;
+    TextView locationText;
+    TextView timeText;
+    TextView menuText;
+
+    DetailMapFragment detailMapFragment;
+
+    String name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DetailMapFragment detailMapFragment;
+        //DetailMapFragment detailMapFragment;
         setContentView(R.layout.activity_detail);
         //음식점 정보 받아오기
-        Intent intent = getIntent();
-        restaurantVO = intent.getParcelableExtra("SELECTED_ITEM");
-        Log.i("RESTAURANTVO(BB)", restaurantVO.toString());
+        /*Intent intent = getIntent();
+        final String name = intent.getParcelableExtra("SELECTED_ITEM");*/
+
         authDatabase = FirebaseDatabase.getInstance().getReference("authentication");
+        mDatabase = FirebaseDatabase.getInstance().getReference("restaurants");
 
-        //이 조건문 왜 쓰는지 모름,,
-        if (savedInstanceState == null) {
-            detailMapFragment = new DetailMapFragment(DetailMapFragment.Check.DetailActivity,
-                                                        getApplicationContext(),
-                                                        (float)restaurantVO.getLatitude(),
-                                                        (float)restaurantVO.getLongitude(),
-                                                        restaurantVO.getName());
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.map_fragment, detailMapFragment, "detail_map")
-                    .commit();
-        }
-        //이미지 동적으로 넣기
-        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.image_layout);
-        StringTokenizer token = new StringTokenizer(restaurantVO.getImageURL(),"$");
-        //LayoutParams 셋팅-왜 LinearLayout의 LayoutParmas?
-        final int width = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics());
-        final int height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics());
-        final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
-        LinearLayout.LayoutParams layoutParams= new LinearLayout.LayoutParams(width, height);
-        layoutParams.rightMargin = margin;
-        while(token.hasMoreTokens()) {
-            String url = token.nextToken();
-            Log.i("image url(BB)", url);
-            images.add(url);
-        }
-        for(String url : images) {
-            final String choice = url;
-            ImageView imageView = new ImageView(this);
+        phoneText = (TextView)findViewById(R.id.phone_text);
+        locationText = (TextView)findViewById(R.id.location_text);
+        timeText = (TextView)findViewById(R.id.time_text);
+        menuText = (TextView)findViewById(R.id.menu_text);
 
-            //안드로이드 이미지 크기설정
-            imageView.setLayoutParams(layoutParams);
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-            //안드로이드 이미지 이벤트
-            imageView.setOnClickListener(new View.OnClickListener() {
+        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
+                Intent intent = DetailActivity.this.getIntent();
+                name = intent.getStringExtra("SELECTED_ITEM");
+                Log.i("SELECTED_ITME", name);
+                while(child.hasNext()){
+                    DataSnapshot detailData = child.next();
+                    Log.i("data", detailData.getKey());
+                    if(detailData.getKey().equals(name)){
+                        restaurantVO = detailData.getValue(RestaurantVO.class);
+                        Log.i("correct data",restaurantVO.toString());
+                        //datasetting
+                        detailMapFragment = new DetailMapFragment(DetailMapFragment.Check.DetailActivity,
+                                getApplicationContext(),
+                                (float)restaurantVO.getLatitude(),
+                                (float)restaurantVO.getLongitude(),
+                                restaurantVO.getName());
+                        DetailActivity.this.getSupportFragmentManager()
+                                .beginTransaction()
+                                .replace(R.id.map_fragment, detailMapFragment, "detail_map")
+                                .commit();
+                        //이미지 동적으로 넣기
+                        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.image_layout);
+                        StringTokenizer token = new StringTokenizer(restaurantVO.getImageURL(),"$");
+                        //LayoutParams 셋팅-왜 LinearLayout의 LayoutParmas?
+                        int width = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics());
+                        int height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics());
+                        int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
+                        LinearLayout.LayoutParams layoutParams= new LinearLayout.LayoutParams(width, height);
+                        layoutParams.rightMargin = margin;
+                        while(token.hasMoreTokens()) {
+                            String url = token.nextToken();
+                            Log.i("image url(BB)", url);
+                            images.add(url);
+                        }
+                        for(String url : images) {
+                            final String choice = url;
+                            ImageView imageView = new ImageView(DetailActivity.this);
 
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(DetailActivity.this, ImageActivity.class);
-                    intent.putStringArrayListExtra("images", images);
-                    intent.putExtra("choice_image", choice);
-                    startActivity(intent);
+                            //안드로이드 이미지 크기설정
+                            imageView.setLayoutParams(layoutParams);
+                            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                            //안드로이드 이미지 이벤트
+                            imageView.setOnClickListener(new View.OnClickListener() {
+
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent(DetailActivity.this, ImageActivity.class);
+                                    intent.putStringArrayListExtra("images", images);
+                                    intent.putExtra("choice_image", choice);
+                                    startActivity(intent);
+                                }
+                            });
+                            //이미지 넣기
+                            Glide.with(DetailActivity.this).load(url).into(imageView);
+                            linearLayout.addView(imageView);
+                        }
+                        phoneText.setText(restaurantVO.getPhone());
+                        locationText.setText(restaurantVO.getAddress());
+                        timeText.setText(restaurantVO.getBusinessHours());
+                        StringBuffer buffer = new StringBuffer("메뉴정보\n");
+                        token = new StringTokenizer(restaurantVO.getMenuList(),"$");
+                        while(token.hasMoreTokens()){
+                            buffer.append(token.nextToken()+" ");
+                            buffer.append(token.nextToken()+"\n");
+                        }
+                        menuText.setText(buffer);
+                    }
                 }
-            });
-            //이미지 넣기
-            Glide.with(this).load(url).into(imageView);
-            linearLayout.addView(imageView);
-        }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
 
-        //음식점정보
-        TextView phoneText = (TextView)findViewById(R.id.phone_text);
-        TextView locationText = (TextView)findViewById(R.id.location_text);
-        TextView timeText = (TextView)findViewById(R.id.time_text);
-        TextView menuText = (TextView)findViewById(R.id.menu_text);
-
-        phoneText.setText(restaurantVO.getPhone());
-        locationText.setText(restaurantVO.getAddress());
-        timeText.setText(restaurantVO.getBusinessHours());
-        StringBuffer buffer = new StringBuffer("메뉴정보\n");
-        token = new StringTokenizer(restaurantVO.getMenuList(),"$");
-        while(token.hasMoreTokens()){
-            buffer.append(token.nextToken()+" ");
-            buffer.append(token.nextToken()+"\n");
-        }
-        menuText.setText(buffer);
+            }
+        });
     }
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
