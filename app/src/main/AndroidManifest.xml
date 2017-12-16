@@ -54,9 +54,10 @@
         <activity
             android:name=".FindPwdActivity"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
-        <activity android:name=".ChangePwdActivity"></activity>
+        <activity android:name=".ChangePwdActivity"/>
         <activity android:name=".ReviewAddActivity"/>
         <activity android:name=".ReviewUpdateActivity"/>
+        <activity android:name=".UpdateMyInfoActivity"/>
     </application>
 
 </manifest>

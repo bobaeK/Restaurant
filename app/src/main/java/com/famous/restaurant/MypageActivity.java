@@ -141,12 +141,12 @@ public class MypageActivity extends AppCompatActivity {
                         break;
                     case MotionEvent.ACTION_UP:
                         bt_infoModify.setAlpha((float)1.0);
-                        et_curPassword.setText("");
                         String inputPassword=et_curPassword.getText().toString();
                         if(inputPassword.equals(curPassword))
                             startActivity(new Intent(getApplicationContext(), UpdateMyInfoActivity.class));
                         else
                             Toast.makeText(getApplicationContext(), "비밀번호가 정확하게 입력해주세요!", Toast.LENGTH_LONG).show();
+                        et_curPassword.setText("");
                         break;
                 }
                 return true;
