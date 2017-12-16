@@ -383,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
             for(ReviewVO review : reviewList) {
                 if(rVO.getName().equals(review.getRestaurant())) {
                     rCnt++;
-                    starAvg=review.getRating_star();
+                    starAvg+=review.getRating_star();
                 }
             }
 
