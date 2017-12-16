@@ -43,7 +43,8 @@ public class MypageActivity extends AppCompatActivity {
     DatabaseReference authDatabase;
 
     List<String> certifiedStoreList=new ArrayList<>();
-    List<RegisteredReviewItem> reviewList=new ArrayList<>();
+    List<RegisteredReviewItem> registeredReviewList=new ArrayList<>();
+    List<ReviewVO> reviewList=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,10 +101,11 @@ public class MypageActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     ReviewVO reviewVO = postSnapshot.getValue(ReviewVO.class);
-                    RegisteredReviewItem registeredReviewItem= new RegisteredReviewItem(reviewVO.getRestaurant()+" "+ reviewVO.getReview_text());
-                    reviewList.add(registeredReviewItem);
+                    reviewList.add(reviewVO);
+                    RegisteredReviewItem registeredReviewItem= new RegisteredReviewItem(reviewVO.getRestaurant()+"_"+reviewVO.getDate()+"_"+ reviewVO.getReview_text());
+                    registeredReviewList.add(registeredReviewItem);
                 }
-                for(RegisteredReviewItem rItem : reviewList) {
+                for(RegisteredReviewItem rItem : registeredReviewList) {
                     ReviewAdapter.addItem(rItem);
                 }
                 lv_reviewList.setAdapter(ReviewAdapter);
@@ -119,9 +121,8 @@ public class MypageActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    int i=0;
                     AuthenticationVO authenticationVO = postSnapshot.getValue(AuthenticationVO.class);
-                    certifiedStoreList.add(authenticationVO.getRestaurant()+" "+ authenticationVO.getDate());
+                    certifiedStoreList.add(authenticationVO.getRestaurant()+"_"+ authenticationVO.getDate());
                 }
                 lv_certifiedList.setAdapter(certifiedAdapter);
             }
@@ -175,7 +176,17 @@ public class MypageActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 RegisteredReviewItem item=(RegisteredReviewItem)ReviewAdapter.getItem(position);
-                Toast.makeText(getApplicationContext(), "선택 : "+item.getRegisteredReview(), Toast.LENGTH_LONG).show();
+                Intent intent=new Intent(getApplicationContext(), ReviewUpdateActivity.class);
+                String sItem=item.getRegisteredReview();
+                StringTokenizer restaurantName=new StringTokenizer(sItem, "_");
+                String storeName=restaurantName.nextToken();
+                String selectedReview=null;
+                for(ReviewVO review : reviewList) {
+                    if(review.getRestaurant().equals(storeName))
+                        selectedReview=review.getUser_id();
+                }
+                intent.putExtra("SELECTED_ITEM", selectedReview);
+                startActivity(intent);
             }
         });
 
@@ -192,8 +203,9 @@ public class MypageActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent=new Intent(getApplicationContext(), DetailActivity.class);
                 String item=certifiedAdapter.getItem(position);
-                StringTokenizer restaurantName=new StringTokenizer(item, " ");
-                intent.putExtra("SELECTED_ITEM", restaurantName.nextToken());
+                StringTokenizer restaurantName=new StringTokenizer(item, "_");
+                String storeName=restaurantName.nextToken();
+                intent.putExtra("SELECTED_ITEM", storeName);
                 startActivity(intent);
             }
         });
