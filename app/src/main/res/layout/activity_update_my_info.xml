@@ -51,6 +51,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="text"
                 android:maxLines="1"
+                android:hint="아이디"
                 android:singleLine="true" />
 
         </android.support.design.widget.TextInputLayout>

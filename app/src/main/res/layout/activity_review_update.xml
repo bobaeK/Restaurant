@@ -31,9 +31,9 @@
                     android:onClick="onBackClicked"/>
 
                 <TextView
+                    android:id="@+id/restaurant_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="음식점 이름 넣기"
                     android:textSize="9pt"
                     android:textColor="#ffffffff"
                     android:textStyle="bold"/>

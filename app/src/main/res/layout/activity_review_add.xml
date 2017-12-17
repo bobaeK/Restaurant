@@ -33,7 +33,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="상세보기"
+                    android:id="@+id/restaurant_name"
                     android:textSize="9pt"
                     android:textColor="#ffffffff"
                     android:textStyle="bold"/>

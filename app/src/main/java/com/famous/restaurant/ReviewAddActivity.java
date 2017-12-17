@@ -69,6 +69,9 @@ public class ReviewAddActivity extends AppCompatActivity {
         user_id = SaveSharedPreference.getUserName(getApplicationContext());
         restaurant_name = getIntent().getStringExtra("restaurant_name");
 
+        TextView toolbar_name = (TextView)findViewById(R.id.restaurant_name);
+        toolbar_name.setText(restaurant_name);
+
         insertVO = new ReviewVO();
 
         mDatabase = FirebaseDatabase.getInstance().getReference("reviews");
@@ -337,7 +340,7 @@ public class ReviewAddActivity extends AppCompatActivity {
         }
 
         private void movePage(){
-
+            finish();
         }
 
 }

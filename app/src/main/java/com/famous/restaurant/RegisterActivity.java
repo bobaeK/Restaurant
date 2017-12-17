@@ -66,7 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
         public void onClick(View v) {
             String pwd = reg_pwd.getText().toString();
             String pwd2 = reg_pwd2.getText().toString();
-            if( !pwd.equals("") && pwd.equals(pwd2)){
+            if( pwd.equals("") || !pwd.equals(pwd2)){
                 Toast.makeText(getApplicationContext(),"비밀번호를 확인해주세요",Toast.LENGTH_SHORT).show();
                 return;
             }

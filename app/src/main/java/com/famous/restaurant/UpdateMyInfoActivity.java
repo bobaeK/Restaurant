@@ -1,5 +1,6 @@
 package com.famous.restaurant;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -114,13 +115,22 @@ public class UpdateMyInfoActivity extends AppCompatActivity {
         public void onClick(View v) {
             String pwd = update_pwd.getText().toString();
             String pwd2 = update_pwd2.getText().toString();
-            if(pwd.equals("") && !pwd.equals(pwd2)){
+            if(pwd.equals("") || !pwd.equals(pwd2)){
                 Toast.makeText(getApplicationContext(),"비밀번호를 확인해주세요",Toast.LENGTH_SHORT).show();
                 return;
             }
 
+            member.setPassword(pwd);
+            member.setPhone(update_phone.getText().toString());
+            member.setEmail(update_email.getText().toString());
+            member.setName(update_name.getText().toString());
+
             mDatabase.child(user_id).setValue(member);
             Toast.makeText(getApplicationContext(),"수정되었습니다.",Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
             finish();
         }
     }

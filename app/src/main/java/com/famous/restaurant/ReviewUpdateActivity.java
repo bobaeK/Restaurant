@@ -62,6 +62,8 @@ public class ReviewUpdateActivity extends AppCompatActivity {
     String review_key;
     ProgressDialog progressDialog ;
 
+    TextView toolbar_name;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -116,6 +118,8 @@ public class ReviewUpdateActivity extends AppCompatActivity {
 
         review_key=getIntent().getStringExtra("SELECTED_ITEM");
 
+        toolbar_name = (TextView)findViewById(R.id.restaurant_name);
+
         /* 데이터 setting */
         mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
 
@@ -130,7 +134,8 @@ public class ReviewUpdateActivity extends AppCompatActivity {
                         insertVO = reviewData.getValue(ReviewVO.class);
                         reviewText.setText(insertVO.getReview_text());
                         ratingBar.setRating(insertVO.getRating_star());
-
+                        toolbar_name.setText(insertVO.getRestaurant());
+                        break;
                         //   Toast.makeText(getApplicationContext()," 확인 "+updateVO.getImageUri().get(0),Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -318,6 +323,8 @@ public class ReviewUpdateActivity extends AppCompatActivity {
             if(tot>0){
                 // storage 에 저장
                 UploadImageFileToStorage();
+            }else{
+                finish();
             }
         }
     }
@@ -359,6 +366,7 @@ public class ReviewUpdateActivity extends AppCompatActivity {
 
         }
         progressDialog.dismiss();
+        finish();
     }
 
     private class delete_review_onClickListener implements View.OnClickListener {

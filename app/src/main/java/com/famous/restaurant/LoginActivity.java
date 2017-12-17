@@ -29,6 +29,12 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        if(SaveSharedPreference.getUserName(this)==null){
+            Intent intent =new Intent(getApplicationContext(), MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+            startActivity(intent);
+        }
+
         // 회원가입 페이지로 이동 액션
         TextView link_signup = (TextView)findViewById(R.id.link_signup);
         link_signup.setOnClickListener(new View.OnClickListener() {
@@ -67,12 +73,14 @@ public class LoginActivity extends AppCompatActivity {
 
                                 SaveSharedPreference.setUserName( LoginActivity.this , checkMember.getId());
                                 Toast.makeText(getApplicationContext(),"로그인 되었습니다.",Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                                Intent intent =new Intent(getApplicationContext(), MainActivity.class);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                startActivity(intent);
                                 return;
                             }
                         }
                     }
-                    Toast.makeText(getApplicationContext(),"존재하지 않는 아이디입니다.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(),"존재하지 않는 정보입니다.",Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
