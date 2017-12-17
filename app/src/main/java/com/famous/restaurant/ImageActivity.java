@@ -6,12 +6,18 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
+import com.google.android.gms.vision.text.Text;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +28,6 @@ public class ImageActivity extends AppCompatActivity  {
      * and next wizard steps.
      */
     private ViewPager mPager;
-
     /**
      * The pager adapter, which provides the pages to the view pager widget.
      */
@@ -35,7 +40,6 @@ public class ImageActivity extends AppCompatActivity  {
 
         Intent intent = getIntent();
         images = intent.getStringArrayListExtra("images");
-
         // Instantiate a ViewPager and a PagerAdapter.
         mPager = (ViewPager) findViewById(R.id.pager);
         mPagerAdapter = new CustomPagerAdapter(this);
@@ -47,7 +51,6 @@ public class ImageActivity extends AppCompatActivity  {
         super.onBackPressed();
     }
     class CustomPagerAdapter extends PagerAdapter {
-
         Context mContext;
         LayoutInflater mLayoutInflater;
 
@@ -69,8 +72,10 @@ public class ImageActivity extends AppCompatActivity  {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             View itemView = mLayoutInflater.inflate(R.layout.fragment_image, container, false);
-
+            Log.i("postion",String.valueOf(position));
             ImageView imageView = (ImageView) itemView.findViewById(R.id.imageView);
+            TextView textView = (TextView) itemView.findViewById(R.id.cur_page);
+            textView.setText((position+1)+"/"+images.size());
             Glide.with(ImageActivity.this).load(images.get(position)).into(imageView);
             container.addView(itemView);
 
