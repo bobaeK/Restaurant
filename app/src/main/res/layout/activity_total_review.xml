@@ -26,6 +26,7 @@
                 app:srcCompat="@drawable/ic_back_24dp"/>
 
             <TextView
+                android:id="@+id/restaurant_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="음식점 이름"
@@ -63,5 +64,12 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         android:id="@+id/total_review_list"/>
+    <Button
+        android:layout_gravity="bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onAddReviewClicked"
+        android:text="후기등록"/>
 </LinearLayout>
