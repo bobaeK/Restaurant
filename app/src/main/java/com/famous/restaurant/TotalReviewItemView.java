@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -12,6 +13,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+
+import static com.famous.restaurant.R.id.more_view;
 
 /**
  * Created by BOBAE on 2017-12-08.
@@ -25,6 +28,10 @@ public class TotalReviewItemView extends LinearLayout{
     private TextView review;
     private TextView moreView;
     private ArrayList<ImageView> images;
+    private int lineCount;
+
+    private TextView less_view;
+
     public TotalReviewItemView(Context context) {
         super(context);
         init(context);
@@ -43,12 +50,33 @@ public class TotalReviewItemView extends LinearLayout{
         realReview = (TextView)findViewById(R.id.real_review);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         review = (TextView)findViewById(R.id.review);
-        moreView = (TextView)findViewById(R.id.more_view);
+        moreView = (TextView)findViewById(more_view);
         images = new ArrayList<ImageView>();
         images.add((ImageView)findViewById(R.id.image1));
         images.add((ImageView)findViewById(R.id.image2));
         images.add((ImageView)findViewById(R.id.image3));
         images.add((ImageView)findViewById(R.id.image4));
+
+        moreView.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                moreView.setVisibility(TextView.GONE);
+                review.setLines(lineCount);
+                less_view.setVisibility(TextView.VISIBLE);
+            }
+        });
+
+        less_view = (TextView)findViewById(R.id.less_view);
+        less_view.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                less_view.setVisibility(TextView.GONE);
+                moreView.setVisibility(TextView.VISIBLE);
+                review.setLines(3);
+            }
+        });
 
 
     }
@@ -69,8 +97,20 @@ public class TotalReviewItemView extends LinearLayout{
         }
     }
     public void setRatingBar(float rating){ this.ratingBar.setRating(rating); }
-    public void setReview(String review){
-        this.review.setText(review);
+    public void setReview(String review_){
+        this.review.setText(review_);
+        review.post(new Runnable() {
+            @Override
+            public void run() {
+                lineCount = review.getLineCount();
+                Log.i("LineNum(BB)",String.valueOf(lineCount));
+                if(lineCount > 3) {
+                    moreView.setVisibility(TextView.VISIBLE);
+                    review.setLines(3);
+                }
+            }
+        });
+
     }
     public void setImages(ArrayList<String> url){
         for(int i = 0; i < url.size(); ++i){
