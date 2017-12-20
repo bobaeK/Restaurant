@@ -50,7 +50,7 @@ public class TotalReviewItemView extends LinearLayout{
         realReview = (TextView)findViewById(R.id.real_review);
         ratingBar = (RatingBar)findViewById(R.id.ratingBar);
         review = (TextView)findViewById(R.id.review);
-        moreView = (TextView)findViewById(more_view);
+        moreView = (TextView)findViewById(R.id.more_view);
         images = new ArrayList<ImageView>();
         images.add((ImageView)findViewById(R.id.image1));
         images.add((ImageView)findViewById(R.id.image2));
