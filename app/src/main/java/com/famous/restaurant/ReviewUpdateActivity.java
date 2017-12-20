@@ -2,12 +2,14 @@ package com.famous.restaurant;
 
 import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -373,6 +375,29 @@ public class ReviewUpdateActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
+            AlertDialog.Builder builder = new AlertDialog.Builder(ReviewUpdateActivity.this);
+            builder.setTitle("삭제");
+            // 아이디 일부 메시지로 사용자에게 보여줌
+            builder.setMessage("후기를 삭제하시겠습니까?");
+            builder.setPositiveButton("OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            mDatabase.child(review_key).removeValue();
+                            Toast.makeText(getApplicationContext(),"삭제되었습니다.",Toast.LENGTH_SHORT).show();
+                            dialog.dismiss();
+                            finish();
+                        }
+                    });
+            builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    mDatabase.child(review_key).removeValue();
+                    //Toast.makeText(getApplicationContext(),"삭제되었습니다.",Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                    finish();
+                }
+            });
+            builder.show();
+
         }
     }
 
@@ -387,4 +412,5 @@ public class ReviewUpdateActivity extends AppCompatActivity {
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
 
     }
+    public void onBackButtonClicked(View view){finish();}
 }

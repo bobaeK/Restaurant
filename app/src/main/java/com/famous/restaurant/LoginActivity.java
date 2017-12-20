@@ -1,13 +1,14 @@
 package com.famous.restaurant;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -23,6 +24,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText input_id;
     EditText input_pwd;
     Button btn_login;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,25 @@ public class LoginActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        TextView link_findId = (TextView)findViewById(R.id.link_findId);
+        link_findId.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),FindIDActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        TextView link_findPwd = (TextView)findViewById(R.id.link_findPwd);
+        link_findPwd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(),FindPwdActivity.class);
+                startActivity(intent);
+            }
+        });
+
         input_id = (EditText)findViewById(R.id.input_id);
         input_pwd = (EditText)findViewById(R.id.input_password);
         btn_login = (Button)findViewById(R.id.btn_login);
@@ -72,15 +93,26 @@ public class LoginActivity extends AppCompatActivity {
                             if(checkMember.getPassword().equals(input_pwd.getText().toString())){
 
                                 SaveSharedPreference.setUserName( LoginActivity.this , checkMember.getId());
-                                Toast.makeText(getApplicationContext(),"로그인 되었습니다.",Toast.LENGTH_SHORT).show();
+                                //Toast.makeText(getApplicationContext(),"로그인 되었습니다.",Toast.LENGTH_SHORT).show();
                                 Intent intent =new Intent(getApplicationContext(), MainActivity.class);
-                                intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                                 startActivity(intent);
+                                finish();
                                 return;
                             }
                         }
                     }
-                    Toast.makeText(getApplicationContext(),"존재하지 않는 정보입니다.",Toast.LENGTH_SHORT).show();
+                    // alert 창으로 수정
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                    builder.setTitle("오류");
+                    builder.setMessage("존재하지 않는 아이디이거나 비밀번호가 일치하지 않습니다.");
+                    builder.setPositiveButton("OK",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+                    builder.show();
+                    //Toast.makeText(getApplicationContext(),"존재하지 않는 정보입니다.",Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

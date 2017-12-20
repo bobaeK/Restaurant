@@ -129,7 +129,7 @@ public class UpdateMyInfoActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"수정되었습니다.",Toast.LENGTH_SHORT).show();
 
             Intent intent = new Intent(getApplicationContext(), MypageActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
             finish();
         }

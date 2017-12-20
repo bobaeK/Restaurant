@@ -43,6 +43,20 @@ public class FindPwdActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
+            String pwd_id=find_pwd_id.getText().toString();
+            String pwd_email = find_pwd_email.getText().toString();
+
+            if(pwd_id.equals("")){
+                Toast.makeText(getApplicationContext(),"아이디를 입력해주세요.",Toast.LENGTH_SHORT).show();
+                return;
+            }else{
+                if(pwd_email.equals("")){
+                    Toast.makeText(getApplicationContext(),"이메일을 입력해주세요.",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+            }
+
             mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                 boolean found = false;
                 DataSnapshot memData = null;

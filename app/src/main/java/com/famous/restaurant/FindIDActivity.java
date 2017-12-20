@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -49,6 +50,18 @@ public class FindIDActivity extends AppCompatActivity {
     private class FindIDListener implements View.OnClickListener{
         @Override
         public void onClick(View v) {
+
+            String id_name = find_id_name.getText().toString();
+            String id_eamil = find_id_email.getText().toString();
+            if(id_name.equals("")){
+                Toast.makeText(getApplicationContext(),"이름을 입력해주세요.",Toast.LENGTH_SHORT).show();
+                return;
+            }else{
+                if(id_eamil.equals("")){
+                    Toast.makeText(getApplicationContext(),"이메일을 입력해주세요.",Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
 
             mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
                 String found_id = null;

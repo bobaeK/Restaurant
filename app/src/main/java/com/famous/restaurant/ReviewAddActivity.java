@@ -59,7 +59,7 @@ public class ReviewAddActivity extends AppCompatActivity {
     String user_id;
     String restaurant_name;
 
-    String auth_key;
+    String auth_key = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +73,7 @@ public class ReviewAddActivity extends AppCompatActivity {
         toolbar_name.setText(restaurant_name);
 
         insertVO = new ReviewVO();
+        insertVO.setRating_star(0);
 
         mDatabase = FirebaseDatabase.getInstance().getReference("reviews");
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -144,6 +145,7 @@ public class ReviewAddActivity extends AppCompatActivity {
         });
 
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -262,9 +264,14 @@ public class ReviewAddActivity extends AppCompatActivity {
 
             /* 입력 필수 체크 */
             String review_text = reviewText.getText().toString();
-            if(review_text.length()<=0 || insertVO.getRating_star()==0){
-                Toast.makeText(getApplicationContext(),"필수 항목을 입력해주세요.",Toast.LENGTH_SHORT);
+            if(review_text.equals("")){
+                Toast.makeText(getApplicationContext(),"방문후기(필수)항목을 입력해주세요.",Toast.LENGTH_SHORT).show();
                 return;
+            } else{
+                if(insertVO.getRating_star()<=0){
+                    Toast.makeText(getApplicationContext(),"평점(필수)항목을 입력해주세요.",Toast.LENGTH_SHORT).show();
+                    return;
+                }
             }
 
             Calendar now = Calendar.getInstance();
@@ -342,6 +349,8 @@ public class ReviewAddActivity extends AppCompatActivity {
         private void movePage(){
             finish();
         }
+
+    public void onBackButtonClicked(View view){finish();}
 
 }
 
