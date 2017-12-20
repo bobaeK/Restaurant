@@ -45,7 +45,6 @@ public class MypageActivity extends AppCompatActivity {
     List<String> certifiedStoreList=new ArrayList<>();
     List<RegisteredReviewItem> registeredReviewList=new ArrayList<>();
     List<ReviewVO> reviewList=new ArrayList<>();
-    List<String> keyList=new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +58,7 @@ public class MypageActivity extends AppCompatActivity {
         final ScrollView sv_myPage=(ScrollView)findViewById(R.id.sv_myPage);
         final ArrayAdapter<String> certifiedAdapter = new ArrayAdapter(this, simple_list_item_1, certifiedStoreList);
         final Button bt_infoModify=(Button)findViewById(R.id.bt_infoModify);
+        final String userId=SaveSharedPreference.getUserName(MypageActivity.this);
 
         userName=SaveSharedPreference.getUserName(MypageActivity.this);
         userDatabase = FirebaseDatabase.getInstance().getReference("users");
@@ -102,9 +102,11 @@ public class MypageActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     ReviewVO reviewVO = postSnapshot.getValue(ReviewVO.class);
-                    reviewList.add(reviewVO);
-                    RegisteredReviewItem registeredReviewItem= new RegisteredReviewItem(reviewVO.getRestaurant()+"_"+reviewVO.getDate()+"_"+ reviewVO.getReview_text(), postSnapshot.getKey());
-                    registeredReviewList.add(registeredReviewItem);
+                    if(userId.equals(reviewVO.getUser_id())) {
+                        reviewList.add(reviewVO);
+                        RegisteredReviewItem registeredReviewItem= new RegisteredReviewItem(reviewVO.getRestaurant()+"_"+reviewVO.getDate()+"_"+ reviewVO.getReview_text(), postSnapshot.getKey());
+                        registeredReviewList.add(registeredReviewItem);
+                    }
                 }
                 for(RegisteredReviewItem rItem : registeredReviewList) {
                     ReviewAdapter.addItem(rItem);
@@ -123,7 +125,9 @@ public class MypageActivity extends AppCompatActivity {
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
                     AuthenticationVO authenticationVO = postSnapshot.getValue(AuthenticationVO.class);
-                    certifiedStoreList.add(authenticationVO.getRestaurant()+"_"+ authenticationVO.getDate());
+
+                    if(userId.equals(authenticationVO.getMem_id()))
+                        certifiedStoreList.add(authenticationVO.getRestaurant()+"_"+ authenticationVO.getDate());
                 }
                 lv_certifiedList.setAdapter(certifiedAdapter);
             }
