@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                         }
                     }
                     // alert 창으로 수정
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                    AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                     builder.setTitle("오류");
                     builder.setMessage("존재하지 않는 아이디이거나 비밀번호가 일치하지 않습니다.");
                     builder.setPositiveButton("OK",

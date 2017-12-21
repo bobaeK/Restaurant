@@ -169,6 +169,10 @@ public class ReviewUpdateActivity extends AppCompatActivity {
                     update_imageView[FB_imageCnt].setVisibility(ImageView.VISIBLE);
                     FB_imageCnt++;
                 }
+                // 사진 4개이상 될 경우 add button 없앤다.
+                if (FB_imageCnt == 4) {
+                    btn_update_photo.setVisibility(ImageView.GONE);
+                }
             }
 
             @Override
@@ -177,11 +181,6 @@ public class ReviewUpdateActivity extends AppCompatActivity {
             }
         });
 
-        // 사진 4개이상 될 경우 add button 없앤다.
-        if (FB_imageCnt == 4) {
-            btn_update_photo.setVisibility(ImageView.GONE);
-        }
-
     }
 
     @Override
@@ -189,7 +188,7 @@ public class ReviewUpdateActivity extends AppCompatActivity {
 
         super.onActivityResult(requestCode, resultCode, data);
         int totNum = FB_imageCnt + new_imageCnt;
-        Toast.makeText(getApplicationContext()," "+totNum,Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getApplicationContext()," "+totNum,Toast.LENGTH_SHORT).show();
         if (requestCode == Image_Request_Code && resultCode == RESULT_OK && data != null && data.getData() != null) {
             filePathUri[totNum] = data.getData();
             try {
