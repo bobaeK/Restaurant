@@ -244,12 +244,7 @@ public class ReviewAddActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-
-
-            // Creating intent.
             Intent intent = new Intent();
-
-            // Setting intent type as image to select image from phone storage.
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
             startActivityForResult(Intent.createChooser(intent, "Please Select Image"), Image_Request_Code);
@@ -347,6 +342,10 @@ public class ReviewAddActivity extends AppCompatActivity {
         }
 
         private void movePage(){
+            Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("SELECTED_ITEM", insertVO.getRestaurant());
+            startActivity(intent);
             finish();
         }
 
