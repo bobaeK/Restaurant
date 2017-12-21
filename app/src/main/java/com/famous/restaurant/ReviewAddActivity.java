@@ -298,9 +298,9 @@ public class ReviewAddActivity extends AppCompatActivity {
         }
 
         private void UploadImageFileToStorage(final String key) {
-
+            StorageReference storageReference2nd;
             for (int i = 0; i < imageCnt; i++) {
-                StorageReference storageReference2nd = storageReference.child("review_images/" + System.currentTimeMillis() + "." + GetFileExtension(filePathUri[i]));
+                storageReference2nd = storageReference.child("review_images/" + System.currentTimeMillis() + "." + GetFileExtension(filePathUri[i]));
                 storageReference2nd.putFile(filePathUri[i])
                         .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                             @SuppressWarnings("VisibleForTests")
@@ -320,6 +320,7 @@ public class ReviewAddActivity extends AppCompatActivity {
                                 Toast.makeText(ReviewAddActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
                             }
                         });
+//                storageReference2nd.
 
             }
             movePage();

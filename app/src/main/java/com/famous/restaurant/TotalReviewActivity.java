@@ -31,6 +31,7 @@ public class TotalReviewActivity extends AppCompatActivity {
     TextView reviewCount;
     ListView listView;
     TotalReviewAdapter adapter;
+    ArrayList<String> image_url_list;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +67,7 @@ public class TotalReviewActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 Iterator<DataSnapshot> list_it = dataSnapshot.getChildren().iterator();
-                                ArrayList<String> image_url_list = new ArrayList<String>();
+                                image_url_list = new ArrayList<String>();
                                 while (list_it.hasNext()) {
                                     DataSnapshot dss = list_it.next();
                                     image_url_list.add(dss.getValue(String.class));
