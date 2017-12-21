@@ -1,6 +1,7 @@
 package com.famous.restaurant;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,7 +30,7 @@ public class TotalReviewItemView extends LinearLayout{
     private TextView moreView;
     private ArrayList<ImageView> images;
     private int lineCount;
-
+    Context context;
     private TextView less_view;
 
     public TotalReviewItemView(Context context) {
@@ -44,7 +45,7 @@ public class TotalReviewItemView extends LinearLayout{
     private void init(Context context){
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.total_review_item, this, true);
-
+        this.context = context;
         id = (TextView)findViewById(R.id.id);
         date = (TextView)findViewById(R.id.date);
         realReview = (TextView)findViewById(R.id.real_review);
@@ -112,11 +113,20 @@ public class TotalReviewItemView extends LinearLayout{
         });
 
     }
-    public void setImages(ArrayList<String> url){
+    public void setImages(final ArrayList<String> url){
         for(int i = 0; i < url.size(); ++i){
+            Log.i("image_url",url.get(i));
             ImageView imageView = images.get(i);
             imageView.setVisibility(VISIBLE);
-            Glide.with(getContext()).load(url.get(i)).into(imageView);
+            Glide.with(context).load(url.get(i)).into(imageView);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, ImageActivity.class);
+                    intent.putStringArrayListExtra("images", url);
+                    context.startActivity(intent);
+                }
+            });
             images.set(i, imageView);
         }
     }

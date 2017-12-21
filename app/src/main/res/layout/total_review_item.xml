@@ -99,26 +99,34 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop"
+                android:layout_margin="3dp"
                 android:src="@drawable/category5"
                 android:id="@+id/image1"
                 android:visibility="gone"/>
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop"
+                android:layout_margin="3dp"
                 android:src="@drawable/ic_mr_button_connected_01_light"
                 android:id="@+id/image2"
                 android:visibility="gone"/>
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop"
+                android:layout_margin="3dp"
                 android:src="@drawable/ic_mr_button_connected_01_light"
                 android:id="@+id/image3"
                 android:visibility="gone"/>
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:scaleType="centerCrop"
+                android:layout_margin="3dp"
                 android:src="@drawable/ic_mr_button_connected_01_light"
                 android:id="@+id/image4"
                 android:visibility="gone"/>
