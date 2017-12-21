@@ -363,7 +363,7 @@ public class DetailActivity extends AppCompatActivity {
             Log.d("gapLatitude", Double.toString(gapLatitude));
             Log.d("gapLongitude", Double.toString(gapLongitude));
 
-            if (gapLatitude < 0.01 && gapLongitude < 0.5) {
+            if (gapLatitude < 0.0001 && gapLongitude < 0.005) {
 
                 authDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
 
