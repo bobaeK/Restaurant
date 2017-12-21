@@ -274,9 +274,10 @@ public class DetailActivity extends AppCompatActivity {
                                 }
                             });
                         }
-                        ++count;
+
                     }
                 }
+                ++count;
             }
 
             @Override
@@ -338,6 +339,7 @@ public class DetailActivity extends AppCompatActivity {
 
     //인증하기
     public void onAddPlaceClicked(View view) {
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)&&ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
@@ -407,7 +409,7 @@ public class DetailActivity extends AppCompatActivity {
 
                     }
                 });
-
+                confirmButton.setEnabled(false);
                 builder.setTitle("인증 완료");
                 builder.setMessage(restaurantVO.getName() + "이(가) 가본 음식점으로 인증되었습니다!" +
                         " 후기를 작성하시겠습니까");
