@@ -97,17 +97,20 @@ public class MypageActivity extends AppCompatActivity {
             }
         });
 
-        reviewDatabase.addValueEventListener(new ValueEventListener() {
+        reviewDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    ReviewVO reviewVO = postSnapshot.getValue(ReviewVO.class);
-                    if(userId.equals(reviewVO.getUser_id())) {
+                Iterator<DataSnapshot> child = snapshot.getChildren().iterator();
+                while(child.hasNext()) {
+                    DataSnapshot reviewData=child.next();
+                    ReviewVO reviewVO = reviewData.getValue(ReviewVO.class);
+                    if (userId.equals(reviewVO.getUser_id())) {
                         reviewList.add(reviewVO);
-                        RegisteredReviewItem registeredReviewItem= new RegisteredReviewItem(reviewVO.getRestaurant()+"_"+reviewVO.getDate()+"_"+ reviewVO.getReview_text(), postSnapshot.getKey());
+                        RegisteredReviewItem registeredReviewItem = new RegisteredReviewItem(reviewVO.getRestaurant() + "_" + reviewVO.getDate() + "_" + reviewVO.getReview_text(), reviewData.getKey());
                         registeredReviewList.add(registeredReviewItem);
                     }
                 }
+
                 for(RegisteredReviewItem rItem : registeredReviewList) {
                     ReviewAdapter.addItem(rItem);
                 }
@@ -120,7 +123,7 @@ public class MypageActivity extends AppCompatActivity {
             }
         });
 
-        authDatabase.addValueEventListener(new ValueEventListener() {
+        authDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {

@@ -15,11 +15,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,8 +43,6 @@ public class DetailActivity extends AppCompatActivity {
     private ArrayList<String> images = new ArrayList<String>();
     private RestaurantVO restaurantVO;
     DatabaseReference authDatabase;
-    DatabaseReference mDatabase;
-    DatabaseReference reviewDatabase;
 
     //음식점정보
     TextView nameText;
@@ -55,29 +54,28 @@ public class DetailActivity extends AppCompatActivity {
     Button confirmButton;
     //지도
     DetailMapFragment detailMapFragment;
-    //후기 3개
-    ListView listView;
-    TotalReviewAdapter adapter;
-    Query reviewQuary;
-    List<ReviewVO> reviewList = new ArrayList<ReviewVO>();
+
 
     String name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //DetailMapFragment detailMapFragment;
         setContentView(R.layout.activity_detail);
 
         //음식점 정보 받아오기
         Intent intent = DetailActivity.this.getIntent();
         name = intent.getStringExtra("SELECTED_ITEM");
-        /*Intent intent = getIntent();
-        final String name = intent.getParcelableExtra("SELECTED_ITEM");*/
+
 
         authDatabase = FirebaseDatabase.getInstance().getReference("authentication");
-        mDatabase = FirebaseDatabase.getInstance().getReference("restaurants");
-        reviewDatabase = FirebaseDatabase.getInstance().getReference("reviews");
-        reviewQuary = reviewDatabase.orderByChild("restaurant").equalTo(name).limitToFirst(3);
+        //상세보기 정보 가져오기
+        DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference("restaurants");
+        Query detailQuery = mDatabase.orderByKey().equalTo(name);
+
+        //후기 3개 가져오기
+        final DatabaseReference reviewDatabase = FirebaseDatabase.getInstance().getReference("reviews");
+        Query reviewQuery = reviewDatabase.orderByChild("restaurant").equalTo(name).limitToFirst(3);
+
 
         nameText = (TextView)findViewById(R.id.name_text);
         phoneText = (TextView)findViewById(R.id.phone_text);
@@ -85,124 +83,217 @@ public class DetailActivity extends AppCompatActivity {
         timeText = (TextView)findViewById(R.id.time_text);
         menuText = (TextView)findViewById(R.id.menu_text);
         confirmButton=(Button)findViewById(R.id.Confirm_btn);
+        detailQuery.addListenerForSingleValueEvent(new ValueEventListener(){
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
 
-        listView = (ListView)findViewById(R.id.total_review_list);
-        adapter = new TotalReviewAdapter(getApplicationContext());
-        mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                Log.i("dataSnapshot",dataSnapshot.toString());
+                restaurantVO = dataSnapshot.getChildren()
+                        .iterator().next()
+                        .getValue(RestaurantVO.class);
+                Log.i("correct data",restaurantVO.toString());
+                //datasetting
+                detailMapFragment = new DetailMapFragment(DetailMapFragment.Check.DetailActivity,
+                        getApplicationContext(),
+                        (float)restaurantVO.getLatitude(),
+                        (float)restaurantVO.getLongitude(),
+                        restaurantVO.getName());
+                DetailActivity.this.getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.map_fragment, detailMapFragment, "detail_map")
+                        .commit();
+                //이미지 동적으로 넣기
+                LinearLayout linearLayout = (LinearLayout)findViewById(R.id.image_layout);
+                StringTokenizer token = new StringTokenizer(restaurantVO.getImageURL(),"$");
+                //LayoutParams 셋팅-왜 LinearLayout의 LayoutParmas?
+                int width = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics());
+                int height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics());
+                int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
+                LinearLayout.LayoutParams layoutParams= new LinearLayout.LayoutParams(width, height);
+                layoutParams.rightMargin = margin;
+                while(token.hasMoreTokens()) {
+                    String url = token.nextToken();
+                    Log.i("image url(BB)", url);
+                    images.add(url);
+                }
+                for(String url : images) {
+                    final String choice = url;
+                    ImageView imageView = new ImageView(DetailActivity.this);
+
+                    //안드로이드 이미지 크기설정
+                    imageView.setLayoutParams(layoutParams);
+                    imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    //안드로이드 이미지 이벤트
+                    imageView.setOnClickListener(new View.OnClickListener() {
+
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent(DetailActivity.this, ImageActivity.class);
+                            intent.putStringArrayListExtra("images", images);
+                            intent.putExtra("choice_image", choice);
+                            startActivity(intent);
+                        }
+
+                    });
+                    //이미지 넣기
+                    Glide.with(DetailActivity.this).load(url).into(imageView);
+                    linearLayout.addView(imageView);
+                }
+                nameText.setText(restaurantVO.getName());
+                phoneText.setText(restaurantVO.getPhone());
+                locationText.setText(restaurantVO.getAddress());
+                timeText.setText(restaurantVO.getBusinessHours());
+                StringBuffer buffer = new StringBuffer("메뉴정보\n");
+                token = new StringTokenizer(restaurantVO.getMenuList(),"$");
+                while(token.hasMoreTokens()){
+                    buffer.append(token.nextToken()+" ");
+                    buffer.append(token.nextToken()+"\n");
+                }
+                menuText.setText(buffer);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //후기 3개
+
+        final LinearLayout linearLayout = (LinearLayout)findViewById(R.id.review_layout);
+        reviewQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+            List<ReviewVO> reviewVOList = new ArrayList<ReviewVO>();
+
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
-                Log.i("SELECTED_ITME", name);
-                while(child.hasNext()){
-                    DataSnapshot detailData = child.next();
-                    Log.i("data", detailData.getKey());
-                    if(detailData.getKey().equals(name)){
-                        restaurantVO = detailData.getValue(RestaurantVO.class);
-                        Log.i("correct data",restaurantVO.toString());
-                        //datasetting
-                        detailMapFragment = new DetailMapFragment(DetailMapFragment.Check.DetailActivity,
-                                getApplicationContext(),
-                                (float)restaurantVO.getLatitude(),
-                                (float)restaurantVO.getLongitude(),
-                                restaurantVO.getName());
-                        DetailActivity.this.getSupportFragmentManager()
-                                .beginTransaction()
-                                .replace(R.id.map_fragment, detailMapFragment, "detail_map")
-                                .commit();
-                        //이미지 동적으로 넣기
-                        LinearLayout linearLayout = (LinearLayout)findViewById(R.id.image_layout);
-                        StringTokenizer token = new StringTokenizer(restaurantVO.getImageURL(),"$");
-                        //LayoutParams 셋팅-왜 LinearLayout의 LayoutParmas?
-                        int width = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics());
-                        int height = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 120, getResources().getDisplayMetrics());
-                        int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 10, getResources().getDisplayMetrics());
-                        LinearLayout.LayoutParams layoutParams= new LinearLayout.LayoutParams(width, height);
-                        layoutParams.rightMargin = margin;
-                        while(token.hasMoreTokens()) {
-                            String url = token.nextToken();
-                            Log.i("image url(BB)", url);
-                            images.add(url);
-                        }
-                        for(String url : images) {
-                            final String choice = url;
-                            ImageView imageView = new ImageView(DetailActivity.this);
+                //몇번째 댓글인지 체크
+                int count = 0;
+                while (child.hasNext()) {
+                    DataSnapshot reviewData = child.next();
+                    Log.i("review data", reviewData.toString());
+                    ReviewVO reviewVO = reviewData.getValue(ReviewVO.class);
+                    reviewVO.setKey(reviewData.getKey());
+                    reviewVOList.add(reviewVO);
 
-                            //안드로이드 이미지 크기설정
-                            imageView.setLayoutParams(layoutParams);
-                            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                            //안드로이드 이미지 이벤트
-                            imageView.setOnClickListener(new View.OnClickListener() {
+                    LayoutInflater inflater = (LayoutInflater) DetailActivity.this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    inflater.inflate(R.layout.total_review_item, linearLayout, true);
+
+                    TextView memberId = (TextView) linearLayout.getChildAt(count).findViewById(R.id.id);
+                    memberId.setText(reviewVO.getUser_id());
+
+                    TextView date = (TextView) linearLayout.getChildAt(count).findViewById(R.id.date);
+                    date.setText(reviewVO.getDate());
+                    TextView realReview = (TextView) linearLayout.getChildAt(count).findViewById(R.id.real_review);
+                    if (reviewVO.isAuthentication()) {
+                        realReview.setVisibility(View.VISIBLE);
+                    }
+
+                    RatingBar ratingBar = (RatingBar) linearLayout.getChildAt(count).findViewById(R.id.ratingBar);
+                    ratingBar.setRating(reviewVO.getRating_star());
+
+                    final TextView review = (TextView) linearLayout.getChildAt(count).findViewById(R.id.review);
+                    review.setText(reviewVO.getReview_text());
+
+                    final TextView moreView = (TextView) linearLayout.getChildAt(count).findViewById(R.id.more_view);
+                    final TextView lessView = (TextView) linearLayout.getChildAt(count).findViewById(R.id.less_view);
+                    review.post(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            int line = review.getLineCount();
+                            if (line > 3) {
+                                review.setMaxLines(3);
+                                moreView.setVisibility(View.VISIBLE);
+                            }
+
+
+                        }
+                    });
+                    moreView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            review.setMaxLines(Integer.MAX_VALUE);
+                            moreView.setVisibility(View.GONE);
+                            lessView.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    lessView.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            review.setMaxLines(3);
+                            moreView.setVisibility(View.VISIBLE);
+                            lessView.setVisibility(View.GONE);
+                        }
+                    });
+                    for (int i = 0; i < reviewVOList.size(); ++i) {
+                        ReviewVO r = reviewVOList.get(i);
+                        if (r.getImageCnt() > 0) {
+                            final List<ImageView> rImages = new ArrayList<ImageView>();
+                            rImages.add((ImageView) linearLayout.getChildAt(count).findViewById(R.id.image1));
+                            rImages.add((ImageView) linearLayout.getChildAt(count).findViewById(R.id.image2));
+                            rImages.add((ImageView) linearLayout.getChildAt(count).findViewById(R.id.image3));
+                            rImages.add((ImageView) linearLayout.getChildAt(count).findViewById(R.id.image4));
+                            String key = reviewVOList.get(i).getKey();
+                            DatabaseReference reviewImage = reviewDatabase.child(key).child("imageUrl");
+                            reviewImage.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                    Iterator<DataSnapshot> list = dataSnapshot.getChildren().iterator();
+                                    final ArrayList<String> imageList = new ArrayList<String>();
+                                    for (int j = 0; j < rImages.size(); ++j) {
+                                        if (list.hasNext()) {
+                                            DataSnapshot d = list.next();
+                                            ImageView imageView = rImages.get(j);
+
+                                            imageView.setVisibility(View.VISIBLE);
+                                            String url = d.getValue(String.class);
+                                            Glide.with(DetailActivity.this).load(url).into(imageView);
+                                            imageList.add(url);
+                                            imageView.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+                                                    Intent intent = new Intent(DetailActivity.this, ImageActivity.class);
+                                                    intent.putStringArrayListExtra("images", imageList);
+                                                    startActivity(intent);
+                                                }
+                                            });
+                                            rImages.set(j, imageView);
+
+                                        } else {
+                                            break;
+                                        }
+                                    }
+                                }
 
                                 @Override
-                                public void onClick(View v) {
-                                    Intent intent = new Intent(DetailActivity.this, ImageActivity.class);
-                                    intent.putStringArrayListExtra("images", images);
-                                    intent.putExtra("choice_image", choice);
-                                    startActivity(intent);
+                                public void onCancelled(DatabaseError databaseError) {
+
                                 }
                             });
-                            //이미지 넣기
-                            Glide.with(DetailActivity.this).load(url).into(imageView);
-                            linearLayout.addView(imageView);
-                        }
-                        nameText.setText(restaurantVO.getName());
-                        phoneText.setText(restaurantVO.getPhone());
-                        locationText.setText(restaurantVO.getAddress());
-                        timeText.setText(restaurantVO.getBusinessHours());
-                        StringBuffer buffer = new StringBuffer("메뉴정보\n");
-                        token = new StringTokenizer(restaurantVO.getMenuList(),"$");
-                        while(token.hasMoreTokens()){
-                            buffer.append(token.nextToken()+" ");
-                            buffer.append(token.nextToken()+"\n");
-                        }
-                        menuText.setText(buffer);
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
-            }
-        });
-        //후기 3개
-        reviewQuary.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                Iterator<DataSnapshot> child = dataSnapshot.getChildren().iterator();
-                Log.i("SELECTED_ITME", name);
-                while(child.hasNext()){
-                    DataSnapshot reviewData = child.next();
-                    ReviewVO review = reviewData.getValue(ReviewVO.class);
-                    Log.i("review data",review.toString());
-                    review.setKey(reviewData.getKey());
-                    reviewList.add(review);
-                }
-                DatabaseReference dataR1;
-                for(final ReviewVO review:reviewList){
-                    if(review.getImageCnt() > 0){
-                        dataR1 = reviewDatabase.child(review.getKey()).child("imageUrl");
-                        dataR1.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                Iterator<DataSnapshot> list_it = dataSnapshot.getChildren().iterator();
-                                ArrayList<String> image_url_list = new ArrayList<String>();
-                                while (list_it.hasNext()) {
-                                    DataSnapshot dss = list_it.next();
-                                    image_url_list.add(dss.getValue(String.class));
-//                                    Toast.makeText(getApplicationContext(),dss.getKey(),Toast.LENGTH_SHORT).show();
+                            authDatabase.addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot snapshot) {
+                                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                                        AuthenticationVO authenticationVO = postSnapshot.getValue(AuthenticationVO.class);
+                                        if (authenticationVO.getMem_id().equals(SaveSharedPreference.getUserName(DetailActivity.this))
+                                                && authenticationVO.getReview_id().equals("none"))
+                                            confirmButton.setEnabled(false);
+                                        else
+                                            confirmButton.setEnabled(true);
+                                    }
                                 }
-                                review.setImageUri(image_url_list);
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                        }
+                        ++count;
                     }
                 }
-            listView.setAdapter(adapter);
             }
 
             @Override
@@ -210,27 +301,10 @@ public class DetailActivity extends AppCompatActivity {
 
             }
         });
-
-        authDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                    AuthenticationVO authenticationVO = postSnapshot.getValue(AuthenticationVO.class);
-                    if(authenticationVO.getMem_id().equals(SaveSharedPreference.getUserName(DetailActivity.this))
-                            &&authenticationVO.getReview_id().equals("none"))
-                        confirmButton.setEnabled(false);
-                    else
-                        confirmButton.setEnabled(true);
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
-
-        adapter.addItems(reviewList);
-        listView.setAdapter(adapter);
     }
+
+
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -265,15 +339,15 @@ public class DetailActivity extends AppCompatActivity {
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)&&ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
                 new AlertDialog.Builder(this).setTitle("Request Permission Rationale")
-                                            .setMessage("인증을 위해서는 gps 허용을 설정해야 합니다.")
-                                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    ActivityCompat.requestPermissions(DetailActivity.this,
-                                                            new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION}
-                                                            ,MY_PERMISSIONS);
-                                                }
-                                            });
+                        .setMessage("인증을 위해서는 gps 허용을 설정해야 합니다.")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ActivityCompat.requestPermissions(DetailActivity.this,
+                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION}
+                                        ,MY_PERMISSIONS);
+                            }
+                        });
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, MY_PERMISSIONS);
             }
