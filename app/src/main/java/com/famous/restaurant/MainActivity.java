@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
                             iv_back.startAnimation(categoryLeftAnim);
                             iv_current.startAnimation(categoryCenterAnim);
                             iv_next.startAnimation(categoryRightAnim);
-
+                            // 마지막 카테고리에서 더이상 넘어가지 않도록 설정
                             imageIdx++;
                             if(imageIdx>8)
                                 imageIdx--;

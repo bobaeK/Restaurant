@@ -15,8 +15,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -51,6 +51,8 @@ public class DetailActivity extends AppCompatActivity {
     TextView locationText;
     TextView timeText;
     TextView menuText;
+
+    Button confirmButton;
     //지도
     DetailMapFragment detailMapFragment;
     //후기 3개
@@ -82,6 +84,7 @@ public class DetailActivity extends AppCompatActivity {
         locationText = (TextView)findViewById(R.id.location_text);
         timeText = (TextView)findViewById(R.id.time_text);
         menuText = (TextView)findViewById(R.id.menu_text);
+        confirmButton=(Button)findViewById(R.id.Confirm_btn);
 
         listView = (ListView)findViewById(R.id.total_review_list);
         adapter = new TotalReviewAdapter(getApplicationContext());
@@ -208,6 +211,23 @@ public class DetailActivity extends AppCompatActivity {
             }
         });
 
+        authDatabase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    AuthenticationVO authenticationVO = postSnapshot.getValue(AuthenticationVO.class);
+                    if(authenticationVO.getMem_id().equals(SaveSharedPreference.getUserName(DetailActivity.this))
+                            &&authenticationVO.getReview_id().equals("none"))
+                        confirmButton.setEnabled(false);
+                    else
+                        confirmButton.setEnabled(true);
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
         adapter.addItems(reviewList);
         listView.setAdapter(adapter);
     }
@@ -285,7 +305,8 @@ public class DetailActivity extends AppCompatActivity {
             double gapLongitude = Math.abs(location.getLongitude() - restaurantVO.getLongitude());
             Log.d("gapLatitude", Double.toString(gapLatitude));
             Log.d("gapLongitude", Double.toString(gapLongitude));
-            if (gapLatitude < 0.0001 && gapLongitude < 0.005) {
+
+            if (gapLatitude < 0.01 && gapLongitude < 0.5) {
 
                 authDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
 
