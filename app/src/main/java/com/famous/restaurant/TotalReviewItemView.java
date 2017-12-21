@@ -109,6 +109,7 @@ public class TotalReviewItemView extends LinearLayout{
                     moreView.setVisibility(TextView.VISIBLE);
                     review.setLines(3);
                 }
+
             }
         });
 
