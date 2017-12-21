@@ -2,7 +2,6 @@ package com.famous.restaurant;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -12,7 +11,6 @@ import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,15 +18,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-
-import static com.famous.restaurant.R.id.review;
 
 public class TotalReviewActivity extends AppCompatActivity {
     DatabaseReference mDatabase;
@@ -82,18 +75,24 @@ public class TotalReviewActivity extends AppCompatActivity {
                                 review.setImageUri(image_url_list);
                                 Log.i("iamgeUrl_1",image_url_list.toString());
                                 Log.i("iamgeUrl_2",review.getImageUri().toString());
+                                reviewList.add(review);
+                                reviewCount.setText("후기("+reviewList.size()+")");
+                                adapter = new TotalReviewAdapter();
+                                adapter.addItems(reviewList);
+                                listView.setAdapter(adapter);
                             }
                             @Override
                             public void onCancelled(DatabaseError databaseError) {
                             }
                         });
+                    } else {
+                        reviewList.add(review);
+                        reviewCount.setText("후기("+reviewList.size()+")");
+                        adapter = new TotalReviewAdapter();
+                        adapter.addItems(reviewList);
+                        listView.setAdapter(adapter);
                     }
-                    reviewList.add(review);
                 }
-                reviewCount.setText("후기("+reviewList.size()+")");
-                adapter = new TotalReviewAdapter();
-                adapter.addItems(reviewList);
-                listView.setAdapter(adapter);
             }
             @Override
             public void onCancelled(DatabaseError databaseError) {
