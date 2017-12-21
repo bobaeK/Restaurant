@@ -57,6 +57,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
     String name;
+    String user_name;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -281,6 +282,26 @@ public class DetailActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
+            }
+        });
+        user_name = SaveSharedPreference.getUserName(DetailActivity.this);
+        // 후기 인증하기
+        authDatabase.orderByChild("restaurant").equalTo(name).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+
+                Iterator<DataSnapshot> child = snapshot.getChildren().iterator();
+                while(child.hasNext()) {
+                    DataSnapshot memData = child.next();
+                    AuthenticationVO authenticationVO = memData.getValue(AuthenticationVO.class);
+                    if(authenticationVO.getMem_id().equals(user_name)&&authenticationVO.getReview_id().equals("none"))
+                    {
+                        confirmButton.setEnabled(false);
+                    }
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
             }
         });
     }
