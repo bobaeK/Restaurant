@@ -272,24 +272,6 @@ public class DetailActivity extends AppCompatActivity {
 
                                 }
                             });
-
-                            authDatabase.addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot snapshot) {
-                                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                                        AuthenticationVO authenticationVO = postSnapshot.getValue(AuthenticationVO.class);
-                                        if (authenticationVO.getMem_id().equals(SaveSharedPreference.getUserName(DetailActivity.this))
-                                                && authenticationVO.getReview_id().equals("none"))
-                                            confirmButton.setEnabled(false);
-                                        else
-                                            confirmButton.setEnabled(true);
-                                    }
-                                }
-
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                }
-                            });
                         }
                         ++count;
                     }
@@ -335,6 +317,7 @@ public class DetailActivity extends AppCompatActivity {
 
     //인증하기
     public void onAddPlaceClicked(View view) {
+        confirmButton.setEnabled(false);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)&&ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_COARSE_LOCATION)) {
@@ -380,7 +363,7 @@ public class DetailActivity extends AppCompatActivity {
             Log.d("gapLatitude", Double.toString(gapLatitude));
             Log.d("gapLongitude", Double.toString(gapLongitude));
 
-            if (gapLatitude < 0.0001 && gapLongitude < 0.005) {
+            if (gapLatitude < 0.01 && gapLongitude < 0.5) {
 
                 authDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
 
